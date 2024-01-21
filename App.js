@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './Screens/Login';
 import Register from "./Screens/Register";
 import Home from "./Screens/Home";
-import onlineCommunity from "./Screens/onlineCommunity";
+import OnlineCommunity from "./Screens/OnlineCommunity";
 import { FIREBASE_APP } from './Services/firebaseConfig';
 import { getAuth } from 'firebase/auth';
 import { useEffect, useState } from 'react';
@@ -51,14 +51,10 @@ export default function App() {
 
     const MainStack = () => {
       return (
-        <Stack.Navigator screenOptions={screenOptionStyle}>
-          <Stack.Screen name="Home" component={Home}>
-            <Tab.Navigator>
-              <Tab.Screen name="Home" component={Home} />
-              <Tab.Screen name="Community" component={onlineCommunity} />
-            </Tab.Navigator>
-          </Stack.Screen>
-        </Stack.Navigator>
+        <Tab.Navigator screenOptions={screenOptionStyle}>
+          <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen name="OnlineCommunity" component={OnlineCommunity} />
+        </Tab.Navigator>
       );
     };
 
@@ -68,6 +64,7 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator screenOptions={screenOptionStyle}>
       {user ? (
+
           <Stack.Screen name="Main" component={MainStack} />
         ) : (
           <>

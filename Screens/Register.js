@@ -25,7 +25,21 @@ function Register() {
         alert("Email or Password cannot be empty");
         return;
       }
-      const user = await register(email, password);
+      const validEmail = email.includes("@");
+      if (!validEmail) {
+        alert("Please enter a valid email");
+        return;
+      }
+      if (password.length < 6) {
+        alert("Password must be at least 6 characters");
+        return;
+      }
+
+      // remove spaces from email
+      const trimmedEmail = email.trim();
+      const trimmedPassword = password.trim();
+
+      const user = await register(trimmedEmail, trimmedPassword);
       if (user) {
         navigation.navigate("Main");
       }

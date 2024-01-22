@@ -5,12 +5,12 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
   TextInput,
-  Button,
   StyleSheet,
   Image,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { signIn } from "../Services/firebaseAuth";
+import { MD3Colors, Button } from "react-native-paper";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -86,10 +86,15 @@ function Login() {
         ) : (
           <>
             <Button
-              containerStyle={styles.button}
-              onPress={handleLogin}
-              title="Login"
-            />
+              style={{
+                width: 200,
+                marginTop: 10,
+              }}
+              mode="contained"
+              onPress={() => handleLogin()}
+            >
+              LOGIN
+            </Button>
             <TouchableOpacity onPress={() => navigation.navigate("Register")}>
               <Text style={styles.register}>New User? Register</Text>
             </TouchableOpacity>
@@ -107,9 +112,10 @@ const styles = StyleSheet.create({
     flex: 1,
     width: "100%",
     padding: 10,
+    marginLeft: 20,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f0e6f7", // Light Purple
+    backgroundColor: MD3Colors.grey50, // Light Purple
   },
   innerContainer: {
     width: "100%",
@@ -123,15 +129,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 30,
     fontWeight: "bold",
-  },
-  button: {
-    backgroundColor: "#add8e6", // Baby Pink
-    width: 200,
-    height: 40,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 5,
-    marginTop: 10,
   },
   register: {
     marginTop: 10,

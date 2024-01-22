@@ -5,6 +5,7 @@ import Register from "./Screens/Register";
 import Home from "./Screens/Home";
 import OnlineCommunity from "./Screens/OnlineCommunity";
 import { ArticleDetailScreen } from './Screens/Home';
+import Profile from './Screens/Profile';
 import { FIREBASE_APP } from './Services/firebaseConfig';
 import { getAuth } from 'firebase/auth';
 import { useEffect, useState } from 'react';
@@ -57,6 +58,7 @@ export default function App() {
         <Tab.Navigator screenOptions={screenOptionStyle}>
           <Stack.Screen name="Home" component={Home} />
           <Stack.Screen name="OnlineCommunity" component={OnlineCommunity} />
+          <Stack.Screen name="Profile" component={Profile} />
         </Tab.Navigator>
       );
     };

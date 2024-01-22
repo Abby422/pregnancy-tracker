@@ -1,62 +1,114 @@
-import { StyleSheet, Text, View } from "react-native";
 import React, { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Modal,
+  ScrollView,
+} from "react-native";
 import {
   Icon,
   IconButton,
   MD3Colors,
-  TextInput,
   Button,
-  List,
   Divider,
+  List,
 } from "react-native-paper";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
-
 const DateCalculator = () => {
-  const [method, setMethod] = React.useState("");
-  const [expanded, setExpanded] = React.useState(false);
-  const [cycleExpanded, setCycleExpanded] = React.useState(false);
-  const handlePress = () => setExpanded(!expanded);
-  const handleCyclePress = () => setCycleExpanded(!cycleExpanded); 
-   const [date, setDate] = useState(new Date(1598051730000));
-   const [mode, setMode] = useState("date");
-   const [show, setShow] = useState(false);
+  const [method, setMethod] = useState("");
+  const [date, setDate] = useState(new Date(1598051730000));
+  const [mode, setMode] = useState("date");
+  const [show, setShow] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
-   const onChange = (event, selectedDate) => {
-     const currentDate = selectedDate;
-     setShow(false);
-     setDate(currentDate);
-   };
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShow(false);
+    setDate(currentDate);
+  };
 
-   const showMode = (currentMode) => {
-     setShow(true);
-     setMode(currentMode);
-   };
+  const showMode = (currentMode) => {
+    setShow(true);
+    setMode(currentMode);
+  };
 
-   const showDatepicker = () => {
-     showMode("date");
-   };
+  const showDatepicker = () => {
+    showMode("date");
+  };
+
+  const handleMethodChange = (selectedMethod) => {
+    setMethod(selectedMethod);
+    setModalVisible(false);
+  };
+
+  const getLabel = () => {
+    switch (method) {
+      case "period":
+        return "First day of last period";
+      case "ivf":
+        return "Date of implantation";
+      case "conception":
+        return "Date of conception";
+      case "ultrasound":
+        return "Date of Ultrasound";
+      default:
+        return "";
+    }
+  };
+
+  const calculateDueDate = () => {
+    // Add your calculation logic based on the selected method
+    let dueDate;
+
+    switch (method) {
+      case "period":
+        dueDate = new Date(startDate);
+        dueDate.setMonth(dueDate.getMonth() + 9);
+        dueDate.setDate(dueDate.getDate() + 7);
+        console.log(dueDate);
+        break;
+      case "ivf":
+        // Example: Due date is 38 weeks from the IVF date
+        dueDate = new Date(date.getTime() + 38 * 7 * 24 * 60 * 60 * 1000);
+        break;
+      case "conception":
+        // Example: Due date is 39 weeks from the conception date
+        dueDate = new Date(date.getTime() + 39 * 7 * 24 * 60 * 60 * 1000);
+        break;
+      case "ultrasound":
+        // Example: Due date is 41 weeks from the ultrasound date
+        dueDate = new Date(date.getTime() + 41 * 7 * 24 * 60 * 60 * 1000);
+        break;
+      default:
+        // Default case, no specific method selected
+        dueDate = null;
+        break;
+    }
+
+    // Due date is calculated, you can use it as needed
+    console.log("Due Date:", dueDate);
+  };
+
   return (
-    <View style={styles.Container}>
+    <View style={styles.container}>
       <View style={styles.innerContainer}>
-        <Icon source="calendar" color={MD3Colors.primary60} size={200} />
+        <Icon source="calendar" color={MD3Colors.primary60} size={50} />
         <Text style={styles.headerText}>Due Date Calculator</Text>
       </View>
-      <View style={styles.formContainer}>
-        <Text style={styles.contentText}>Method</Text>
-        <List.Accordion
-          style={styles.accordion}
-          left={(props) => <List.Icon {...props} />}
-          expanded={expanded}
-          onPress={handlePress}
-        >
-          <List.Item title="First item" />
-          <List.Item title="Second item" />
-        </List.Accordion>
-      </View>
+      <TouchableOpacity onPress={() => setModalVisible(true)}>
+        <View style={styles.formContainer}>
+          <Text style={styles.contentText}>Method</Text>
+          <Text style={styles.selectedMethod}>
+            {method.toUpperCase() || "Select Method"}
+          </Text>
+        </View>
+      </TouchableOpacity>
       <Divider />
       <View style={styles.formContainer}>
-        <Text style={styles.contentText}>First day of last period</Text>
+        <Text style={styles.contentText}>{getLabel()}</Text>
         <IconButton
           icon="calendar"
           iconColor={MD3Colors.primary30}
@@ -73,19 +125,6 @@ const DateCalculator = () => {
           />
         )}
       </View>
-      <View style={styles.formContainer}>
-        <Text style={styles.contentText}>Cyle Length:</Text>
-        <List.Accordion
-          style={styles.accordion}
-          left={(props) => <List.Icon {...props} />}
-          expanded={cycleExpanded}
-          onPress={handleCyclePress}
-        >
-          <List.Item title="20" />
-          <List.Item title="40" />
-        </List.Accordion>
-      </View>
-      <Divider />
       <Divider />
       <Button
         style={{
@@ -93,11 +132,38 @@ const DateCalculator = () => {
           marginTop: 10,
           alignSelf: "center",
         }}
-        mode="outlined"
-        onPress={() => console.log("Pressed")}
+        mode="contained"
+        onPress={() => calculateDueDate()}
       >
         Calculate
       </Button>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.modalContainer}>
+          <ScrollView contentContainerStyle={styles.modalContent}>
+            <List.Item
+              title="Period"
+              onPress={() => handleMethodChange("period")}
+            />
+            <List.Item title="IVF" onPress={() => handleMethodChange("ivf")} />
+            <List.Item
+              title="Conception Date"
+              onPress={() => handleMethodChange("conception")}
+            />
+            <List.Item
+              title="Ultrasound"
+              onPress={() => handleMethodChange("ultrasound")}
+            />
+          </ScrollView>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -105,8 +171,9 @@ const DateCalculator = () => {
 export default DateCalculator;
 
 const styles = StyleSheet.create({
-  Container: {
+  container: {
     flex: 1,
+    justifyContent: "center",
     padding: 20,
     marginTop: 40,
     backgroundColor: MD3Colors.grey50,
@@ -119,7 +186,7 @@ const styles = StyleSheet.create({
   formContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-around",
+    justifyContent: "space-between",
     marginTop: 20,
     marginBottom: 5,
   },
@@ -133,8 +200,20 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginRight: 10,
   },
-  accordion: {
-    width: "100%",
-    marginLeft: 20,
+  selectedMethod: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: MD3Colors.primary30,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 10,
+    margin: 50,
   },
 });

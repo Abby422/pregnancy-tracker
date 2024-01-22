@@ -1,7 +1,7 @@
 import { StyleSheet, TouchableOpacity, View } from "react-native";
-import { Appbar, Avatar, Button, Card, Text } from "react-native-paper";
+import {   MD3Colors, Avatar, Button, Card, Text } from "react-native-paper";
 import Calendar from "../components/Calendar";
-import * as React from "react";
+import React from "react";
 import { useNavigation } from "@react-navigation/native";
 
 const LeftContent = (props) => <Avatar.Icon {...props} icon="folder" />;
@@ -12,7 +12,7 @@ const OnBoarding = () => {
     <View style={styles.container}>
       <View>
         <Text style={styles.headerText}>Welcome! 🥳</Text>
-        <Card>
+        <Card theme={{colors : {primary : "#f0e6f7"}}}>
           <Card.Content>
             <Text variant="bodyMedium" style={styles.contentText}>
               Choose your due date to personalize your experience
@@ -23,12 +23,14 @@ const OnBoarding = () => {
           <Card.Actions>
             <Button
               style={{
-                backgroundColor: "#FF69B4",
-                width: 100,
+                flex: 1,
+                width: 10,
                 alignSelf: "center",
               }}
               mode="contained"
-              onPress={() => console.log("Pressed")}
+              onPress={() => {
+                navigation.navigate("Register");
+              }}
             >
               Ok
             </Button>
@@ -71,18 +73,22 @@ export default OnBoarding;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: "100%",
     justifyContent: "center",
+    alignItems: "stretch",
+    backgroundColor: MD3Colors.grey50, // Light Purple
+    paddingHorizontal: 20,
   },
   headerText: {
     fontSize: 30,
     textAlign: "center",
-    margin: 10,
+    marginVertical: 10,
     fontWeight: "bold",
   },
   contentText: {
     fontSize: 20,
     fontWeight: "600",
     textAlign: "center",
-    margin: 10,
+    marginVertical: 10, 
   },
 });

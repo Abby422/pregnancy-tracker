@@ -9,6 +9,6 @@ const onlineCommunity = () => {
   )
 }
 
-export default onlineCommunity;
+export default onlineCommunity
 
 const styles = StyleSheet.create({}); 

@@ -10,7 +10,6 @@ import { useEffect, useState } from 'react';
 import { ActivityIndicator } from 'react-native';
 import { onAuthStateChanged } from 'firebase/auth';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import OnBoarding from './Screens/OnBoarding';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -64,12 +63,11 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={screenOptionStyle}>
-        {user ? (
+      {user ? (
+
           <Stack.Screen name="Main" component={MainStack} />
         ) : (
           <>
-            <Stack.Screen name="onboarding" component={OnBoarding} />
-
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="Register" component={Register} />
           </>

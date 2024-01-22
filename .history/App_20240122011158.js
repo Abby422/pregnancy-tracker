@@ -64,12 +64,11 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={screenOptionStyle}>
-        {user ? (
+      {user ? (
+
           <Stack.Screen name="Main" component={MainStack} />
         ) : (
           <>
-            <Stack.Screen name="onboarding" component={OnBoarding} />
-
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="Register" component={Register} />
           </>

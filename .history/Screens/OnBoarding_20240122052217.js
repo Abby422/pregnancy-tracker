@@ -2,12 +2,10 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { Appbar, Avatar, Button, Card, Text } from "react-native-paper";
 import Calendar from "../components/Calendar";
 import * as React from "react";
-import { useNavigation } from "@react-navigation/native";
 
 const LeftContent = (props) => <Avatar.Icon {...props} icon="folder" />;
 
 const OnBoarding = () => {
-  const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <View>
@@ -36,31 +34,13 @@ const OnBoarding = () => {
         </Card>
       </View>
       <TouchableOpacity onPress={() => navigation.navigate("dateCalculator")}>
-        <Text
-          style={{
-            fontWeight: "200",
-            textDecorationStyle: "solid",
-            textDecorationLine: "underline",
-            textAlign: "center",
-            margin: 10,
-          }}
-        >
-          I don't know my due date
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate("login")}>
-        <Text
-          variant="titleLarge"
-          style={{
-            fontWeight: "600",
-            textDecorationStyle: "solid",
-            textDecorationLine: "underline",
-            textAlign: "center",
-            margin: 10,
-          }}
-        >
-          LOG IN
-        </Text>
+        <Text style={{
+          fontWeight: "200",
+          textDecorationStyle: "solid",
+          textDecorationLine: "underline",
+          textAlign: "center",
+          margin: 10,
+        }}>I don't know my due date</Text>
       </TouchableOpacity>
     </View>
   );

@@ -36,31 +36,13 @@ const OnBoarding = () => {
         </Card>
       </View>
       <TouchableOpacity onPress={() => navigation.navigate("dateCalculator")}>
-        <Text
-          style={{
-            fontWeight: "200",
-            textDecorationStyle: "solid",
-            textDecorationLine: "underline",
-            textAlign: "center",
-            margin: 10,
-          }}
-        >
-          I don't know my due date
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate("login")}>
-        <Text
-          variant="titleLarge"
-          style={{
-            fontWeight: "600",
-            textDecorationStyle: "solid",
-            textDecorationLine: "underline",
-            textAlign: "center",
-            margin: 10,
-          }}
-        >
-          LOG IN
-        </Text>
+        <Text style={{
+          fontWeight: "200",
+          textDecorationStyle: "solid",
+          textDecorationLine: "underline",
+          textAlign: "center",
+          margin: 10,
+        }}>I don't know my due date</Text>
       </TouchableOpacity>
     </View>
   );

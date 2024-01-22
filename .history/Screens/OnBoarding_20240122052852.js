@@ -50,7 +50,7 @@ const OnBoarding = () => {
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate("login")}>
         <Text
-          variant="titleLarge"
+          variant="titleSmall"
           style={{
             fontWeight: "600",
             textDecorationStyle: "solid",

@@ -19,11 +19,11 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 
 const DateCalculator = () => {
   const [method, setMethod] = useState("");
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(new Date(1598051730000));
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [minDate, setMinDate] = useState(getDateTenMonthsAgo());
+  let minDate = new Date().setMonth(currentDate.getMonth() - 10);
   const [maxDate, setMaxDate] = useState(new Date());
 
   const onChange = (event, selectedDate) => {
@@ -40,18 +40,6 @@ const DateCalculator = () => {
   const calculateCalendarValidators = function (method) { 
 
   }
-
-  function getDateTenMonthsAgo() {
-    // Get the current date
-    var currentDate = new Date();
-
-    // Set the month to 10 months ago
-    currentDate.setMonth(currentDate.getMonth() - 10);
-
-    // Return the updated date
-    return currentDate;
-  }
-
   const showMode = (currentMode) => {
     setShow(true);
     setMode(currentMode);

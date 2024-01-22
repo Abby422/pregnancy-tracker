@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -19,38 +19,16 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 
 const DateCalculator = () => {
   const [method, setMethod] = useState("");
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(new Date(1598051730000));
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [minDate, setMinDate] = useState(getDateTenMonthsAgo());
-  const [maxDate, setMaxDate] = useState(new Date());
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     setShow(false);
     setDate(currentDate);
   };
-
-  useEffect(() => { 
-    calculateCalendarValidators(); //
-  }, [minDate, maxDate, modalVisible]);
-
-
-  const calculateCalendarValidators = function (method) { 
-
-  }
-
-  function getDateTenMonthsAgo() {
-    // Get the current date
-    var currentDate = new Date();
-
-    // Set the month to 10 months ago
-    currentDate.setMonth(currentDate.getMonth() - 10);
-
-    // Return the updated date
-    return currentDate;
-  }
 
   const showMode = (currentMode) => {
     setShow(true);
@@ -86,7 +64,7 @@ const DateCalculator = () => {
     // Add your calculation logic based on the selected method
     let dueDate;
 
-    console.log("method", method, date);
+    console.log("method", date);
     switch (method) {
       case "period":
         dueDate = new Date(date);
@@ -139,12 +117,11 @@ const DateCalculator = () => {
           size={20}
           onPress={showDatepicker}
         />
-        {method !== "" && show && (
+        {show && (
           <DateTimePicker
             testID="dateTimePicker"
             display="calendar"
             value={date}
-            minimumDate={minDate}
             mode="date"
             is24Hour={true}
             onChange={onChange}

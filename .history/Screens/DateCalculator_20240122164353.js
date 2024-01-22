@@ -19,7 +19,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 
 const DateCalculator = () => {
   const [method, setMethod] = useState("");
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(new Date(1598051730000));
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);

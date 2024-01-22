@@ -60,7 +60,7 @@ function Login() {
           source={require("../assets/Images/cute-baby.png")}
           style={styles.image}
         />
-        <Text style={styles.title}>Welcome to Baby Tracker</Text>
+        <Text style={styles.title}>Welcome to PTracker</Text>
 
         <TextInput
           placeholder="Email"

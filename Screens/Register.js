@@ -62,7 +62,7 @@ function Register() {
           style={styles.image}
         />
         <Text style={{ fontSize: 30, fontWeight: "bold" }}>
-          Welcome to Baby Tracker
+          Welcome to PTracker
         </Text>
         <TextInput
           placeholder="Email"

@@ -59,13 +59,14 @@ const DateCalculator = () => {
     }
   };
 
-  const calculateDueDate = () => {
+  const calculateDueDate = (date) => {
+    console.log(date)
     // Add your calculation logic based on the selected method
     let dueDate;
 
     switch (method) {
       case "period":
-        dueDate = new Date(startDate);
+        dueDate = new Date(date);
         dueDate.setMonth(dueDate.getMonth() + 9);
         dueDate.setDate(dueDate.getDate() + 7);
         console.log(dueDate);
@@ -118,8 +119,9 @@ const DateCalculator = () => {
         {show && (
           <DateTimePicker
             testID="dateTimePicker"
+            display="calendar"
             value={date}
-            mode={mode}
+            mode="date"
             is24Hour={true}
             onChange={onChange}
           />
@@ -133,7 +135,7 @@ const DateCalculator = () => {
           alignSelf: "center",
         }}
         mode="contained"
-        onPress={() => calculateDueDate()}
+        onPress={() => calculateDueDate({date})}
       >
         Calculate
       </Button>

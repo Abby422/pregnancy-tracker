@@ -13,14 +13,14 @@ import { ActivityIndicator } from 'react-native';
 import { onAuthStateChanged } from 'firebase/auth';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import OnBoarding from './Screens/OnBoarding';
+import MealPlanScreen from './Screens/MealPlanScreen';
 import DateCalculator from './Screens/DateCalculator';
+import { MD3Colors } from 'react-native-paper';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const auth = getAuth(FIREBASE_APP);
-const screenOptionStyle = {
-  headerShown: false,
-};
+
 
 
  
@@ -31,6 +31,20 @@ export default function App() {
   const screenOptionStyle = {
     headerShown: false,
   };
+
+  const tabOptionStyle = {
+  headerShown: false,
+  tabBarStyle: {
+    backgroundColor: "#CCCCCC",
+    color: "#FFFFFF",
+    tabBarIcon : {
+      color: "#FFFFFF",
+      focused: "#000000",
+      size: 30,
+    },
+    },
+  };
+
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -55,10 +69,11 @@ export default function App() {
 
     const MainStack = () => {
       return (
-        <Tab.Navigator screenOptions={screenOptionStyle}>
+        <Tab.Navigator screenOptions={tabOptionStyle}>
           <Stack.Screen name="Home" component={Home} />
           <Stack.Screen name="OnlineCommunity" component={OnlineCommunity} />
           <Stack.Screen name="Profile" component={Profile} />
+          <Stack.Screen name="MealPlanScreen" component={MealPlanScreen} />
         </Tab.Navigator>
       );
     };

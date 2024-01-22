@@ -48,7 +48,7 @@ const OnBoarding = () => {
           I don't know my due date
         </Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate("login")}>
+      <TouchableOpacity onPress={() => navigation.navigate("Login")}>
         <Text
           variant="titleLarge"
           style={{

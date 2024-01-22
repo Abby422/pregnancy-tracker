@@ -4,6 +4,7 @@ import Login from './Screens/Login';
 import Register from "./Screens/Register";
 import Home from "./Screens/Home";
 import OnlineCommunity from "./Screens/OnlineCommunity";
+import { ArticleDetailScreen } from './Screens/Home';
 import { FIREBASE_APP } from './Services/firebaseConfig';
 import { getAuth } from 'firebase/auth';
 import { useEffect, useState } from 'react';
@@ -66,7 +67,13 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator screenOptions={screenOptionStyle}>
         {user ? (
-          <Stack.Screen name="Main" component={MainStack} />
+          <>
+            <Stack.Screen name="Main" component={MainStack} />
+            <Stack.Screen
+              name="ArticleDetailScreen"
+              component={ArticleDetailScreen}
+            />
+          </>
         ) : (
           <>
             <Stack.Screen name="onboarding" component={OnBoarding} />

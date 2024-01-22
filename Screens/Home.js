@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
+import { WebView } from "react-native-webview";
 
 // Function to calculate the due date and remaining weeks
 const calculateDueDate = (currentDate, pregnancyDuration) => {
@@ -18,6 +19,7 @@ const calculateDueDate = (currentDate, pregnancyDuration) => {
   return { dueDate, remainingWeeks };
 };
 
+
 const Home = () => {
   const pregnancyDuration = 40; // Adjust this value based on the average pregnancy duration
   const [article, setArticle] = useState([]);
@@ -25,6 +27,15 @@ const Home = () => {
   const [dueDate, setDueDate] = useState(null);
   const [remainingWeeks, setRemainingWeeks] = useState(null);
   const navigation = useNavigation();
+
+const handleArticlePress = (article) => {
+  navigation.navigate("ArticleDetailScreen", {
+    title: article.headline,
+    url: article.url,
+  });
+  console.log(`Article ${article.headline} pressed`);
+};
+
 
   useEffect(() => {
     const { dueDate, remainingWeeks } = calculateDueDate(
@@ -39,25 +50,13 @@ const Home = () => {
   }, [currentDate]);
   const getArticles = async () => {
     try {
-
-      
-
       const response = await fetch("https://api.nhs.uk/pregnancy/", { method: 'GET', headers: { 'subscription-key': 'a0c4c4c4c4c44c4c8c4c4c4c4c4c4c4c' }});
       const data = await response.json();
-      console.log("data",data);
+      console.log("data",data.mainEntityOfPage[1].mainEntityOfPage);
 
-      const description = data.description;
-      console.log("description",description);
+      const articles = data.mainEntityOfPage[1].mainEntityOfPage;
 
-      const headline = data.headline;
-      console.log("headline",headline);
-
-      const mainEntityOfPage = data.mainEntityOfPage;
-      console.log("mainEntityOfPage",mainEntityOfPage);
-
-      // const data = await response;
-      // console.log(response.mainEntityOfPage);
-      // setArticle(data.headlines || []);
+      setArticle(articles || []);
     } catch (error) {
       console.log("Error fetching Data", error);
     }
@@ -83,14 +82,13 @@ const Home = () => {
       </View>
 
       <View style={styles.articlesContainer}>
-        {article &&
-          article.map((articles, index) => (
-            <ArticleCard
-              key={index}
-              title={articles.headline}
-              onPress={() => handleArticlePress(articles)}
-            />
-          ))}
+        {article.map((article, index) => (
+          <ArticleCard
+            key={index}
+            title={article.headline}
+            onPress={() => handleArticlePress(article)}
+          />
+        ))}
       </View>
     </ScrollView>
   );
@@ -111,22 +109,29 @@ const ArticleCard = ({ title, onPress }) => (
   </TouchableOpacity>
 );
 
-const handleArticlePress = (articleNumber) => {
-  navigation.navigate("ArticleDetail", {
-    title: article.headline,
-    url: article.url,
-  });
-  console.log(`Article ${articleNumber} pressed`);
-};
 
 const ArticleDetailScreen = ({ route }) => {
   const { title, url } = route.params;
+  const [articleContent, setArticleContent] = useState("");
+
+  useEffect(() => {
+    const fetchArticleContent = async () => {
+      try {
+        const response = await fetch(url);
+        const data = await response.text();
+        setArticleContent(data);
+      } catch (error) {
+        console.log("Error fetching article content", error);
+      }
+    };
+
+    fetchArticleContent();
+  }, [url]);
 
   return (
-    <View style={styles.articleDetailContainer}>
+    <View style={styles.container}>
       <Text style={styles.articleDetailTitle}>{title}</Text>
-      <Text>{url}</Text>
-      {/* You can display more details or load the content from the URL here */}
+      <WebView source={{ html: articleContent }} style={styles.webView} />
     </View>
   );
 };
@@ -183,6 +188,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 10,
+  },
+  webView: {
+    marginTop: 20,
   },
 });
 

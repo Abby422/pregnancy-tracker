@@ -30,6 +30,7 @@ const DateCalculator = () => {
   const [ivf, setIVF] = useState(false);
   const [checked, setChecked] = useState("3_days");
 
+
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     setShow(false);
@@ -37,12 +38,8 @@ const DateCalculator = () => {
   };
 
   useEffect(() => {
-    if (method === "ivf") {
-      setIVF(true);
-    } else {
-      setIVF(false);
-    }
-  }, [method]);
+    calculateCalendarValidators(); //
+  }, [minDate, maxDate, modalVisible]);
 
   const calculateCalendarValidators = function (method) {};
 
@@ -76,6 +73,7 @@ const DateCalculator = () => {
       case "period":
         return "First day of last period";
       case "ivf":
+        setIVF(true);
         return "Date of implantation";
       case "conception":
         return "Date of conception";
@@ -160,48 +158,16 @@ const DateCalculator = () => {
       <Divider />
       {ivf && (
         <>
-          <Text
-            style={{
-              fontSize: 16,
-              fontWeight: "bold",
-              marginTop: 20,
-              marginBottom: 5,
-            }}
-          >
-            Embryo Transfer Date
-          </Text>
-          <View style={styles.formContainer}>
-            <Text
-              style={{
-                fontSize: 16,
-                marginRight: 10,
-              }}
-            >
-              Day 3
-            </Text>
-
-            <RadioButton
-              value="3_days"
-              status={checked === "3_days" ? "checked" : "unchecked"}
-              onPress={() => setChecked("3_days")}
-            />
-          </View>
-          <View style={styles.formContainer}>
-            <Text
-              style={{
-                fontSize: 16,
-                marginRight: 10,
-              }}
-            >
-              Day 5
-            </Text>
-
-            <RadioButton
-              value="5_days"
-              status={checked === "5_days" ? "checked" : "unchecked"}
-              onPress={() => setChecked("5_days")}
-            />
-          </View>
+          <RadioButton
+            value="3 days"
+            status={checked === "3_days" ? "checked" : "unchecked"}
+            onPress={() => setChecked("3_days")}
+          />
+          <RadioButton
+            value="5 days"
+            status={checked === "5_days" ? "checked" : "unchecked"}
+            onPress={() => setChecked("5_days")}
+          />
         </>
       )}
       <Button

@@ -160,25 +160,8 @@ const DateCalculator = () => {
       <Divider />
       {ivf && (
         <>
-          <Text
-            style={{
-              fontSize: 16,
-              fontWeight: "bold",
-              marginTop: 20,
-              marginBottom: 5,
-            }}
-          >
-            Embryo Transfer Date
-          </Text>
           <View style={styles.formContainer}>
-            <Text
-              style={{
-                fontSize: 16,
-                marginRight: 10,
-              }}
-            >
-              Day 3
-            </Text>
+            <Text style={styles.contentText}>Embryo Age</Text>
 
             <RadioButton
               value="3_days"
@@ -186,22 +169,11 @@ const DateCalculator = () => {
               onPress={() => setChecked("3_days")}
             />
           </View>
-          <View style={styles.formContainer}>
-            <Text
-              style={{
-                fontSize: 16,
-                marginRight: 10,
-              }}
-            >
-              Day 5
-            </Text>
-
-            <RadioButton
-              value="5_days"
-              status={checked === "5_days" ? "checked" : "unchecked"}
-              onPress={() => setChecked("5_days")}
-            />
-          </View>
+          <RadioButton
+            value="5 days"
+            status={checked === "5_days" ? "checked" : "unchecked"}
+            onPress={() => setChecked("5_days")}
+          />
         </>
       )}
       <Button

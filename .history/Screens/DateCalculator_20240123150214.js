@@ -160,25 +160,11 @@ const DateCalculator = () => {
       <Divider />
       {ivf && (
         <>
-          <Text
-            style={{
-              fontSize: 16,
-              fontWeight: "bold",
-              marginTop: 20,
-              marginBottom: 5,
-            }}
-          >
-            Embryo Transfer Date
+          <Text>
+            Embryo Transfer Date: {moment(date).format("DD MMM YYYY")}
           </Text>
           <View style={styles.formContainer}>
-            <Text
-              style={{
-                fontSize: 16,
-                marginRight: 10,
-              }}
-            >
-              Day 3
-            </Text>
+            <Text style={styles.contentText}>3 days</Text>
 
             <RadioButton
               value="3_days"
@@ -186,15 +172,9 @@ const DateCalculator = () => {
               onPress={() => setChecked("3_days")}
             />
           </View>
+          <Divider />
           <View style={styles.formContainer}>
-            <Text
-              style={{
-                fontSize: 16,
-                marginRight: 10,
-              }}
-            >
-              Day 5
-            </Text>
+            <Text style={styles.contentText}>5 days</Text>
 
             <RadioButton
               value="5_days"

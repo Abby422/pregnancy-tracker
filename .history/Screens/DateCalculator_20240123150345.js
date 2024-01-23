@@ -186,15 +186,9 @@ const DateCalculator = () => {
               onPress={() => setChecked("3_days")}
             />
           </View>
+          <Divider />
           <View style={styles.formContainer}>
-            <Text
-              style={{
-                fontSize: 16,
-                marginRight: 10,
-              }}
-            >
-              Day 5
-            </Text>
+            <Text style={styles.contentText}>Day 5</Text>
 
             <RadioButton
               value="5_days"

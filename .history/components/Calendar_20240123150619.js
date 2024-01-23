@@ -37,6 +37,7 @@ const Calendar = () => {
         icon="calendar"
         onPress={showDatepicker}
         style={{
+          backgroundColor: "#f0e6f7",
           width: "auto",
           alignSelf: "center",
         }}

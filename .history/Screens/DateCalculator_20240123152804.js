@@ -6,9 +6,7 @@ import {
   TouchableOpacity,
   Modal,
   ScrollView,
-  TextInput,
 } from "react-native";
-import ModalDropdown from "react-native-modal-dropdown";
 import {
   Icon,
   IconButton,
@@ -20,7 +18,6 @@ import {
 } from "react-native-paper";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import moment from "moment";
-import Dropdown from "../components/DropDown";
 const DateCalculator = () => {
   const [method, setMethod] = useState("");
   const [date, setDate] = useState(new Date());
@@ -31,11 +28,7 @@ const DateCalculator = () => {
   const [maxDate, setMaxDate] = useState(new Date());
   const [dueDate, setDueDate] = useState(null);
   const [ivf, setIVF] = useState(false);
-  const [ultrasound, setUltrasound] = useState(false);
   const [checked, setChecked] = useState("3_days");
-  const [selectedOption, setSelectedOption] = useState(null);
-  const [ultrasoundDays, setUltraSoundDays] = useState(0);
-  const [ultrasoundWeeks, setUltraSoundWeeks] = useState(0);
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -46,13 +39,8 @@ const DateCalculator = () => {
   useEffect(() => {
     if (method === "ivf") {
       setIVF(true);
-      setUltrasound(false);
-    } else if (method === "ultrasound") {
-      setUltrasound(true);
-      setIVF(false);
     } else {
       setIVF(false);
-      setUltrasound(false);
     }
   }, [method]);
 
@@ -120,15 +108,13 @@ const DateCalculator = () => {
         }
         break;
       case "conception":
+        
         dueDate = new Date(date);
         dueDate.setDate(dueDate.getDate() + 266);
         break;
       case "ultrasound":
-        //  compute the due date given the number of weeks and days pregnant given the date of utlrasound
-        dueDate = new Date();
-        let givenDate = new Date(date);
-        let numberOfDaysAlreadyPregnant = ultrasoundWeeks*7 + ultrasoundDays;
-        dueDate.setDate(givenDate.getDate() + 266 - numberOfDaysAlreadyPregnant);
+        // Example: Due date is 41 weeks from the ultrasound date
+        dueDate = new Date(date.getTime() + 41 * 7 * 24 * 60 * 60 * 1000);
         break;
       default:
         // Default case, no specific method selected
@@ -224,78 +210,6 @@ const DateCalculator = () => {
           </View>
         </>
       )}
-
-      {ultrasound && (
-        // select weeks and days
-        <>
-          <Text
-            style={{
-              fontSize: 16,
-              fontWeight: "bold",
-              marginTop: 20,
-              marginBottom: 5,
-            }}
-          >
-            Ultrasound Date
-          </Text>
-          <View style={styles.formContainer}>
-            <Text
-              style={{
-                fontSize: 16,
-                marginRight: 10,
-              }}
-            >
-              Weeks
-            </Text>
-
-            <TextInput
-              style={{
-                height: 40,
-                borderColor: "gray",
-                borderWidth: 1,
-                width: 100,
-              }}
-              keyboardType="numeric"
-              onChangeText={(number) => {
-                // only check for 42 weeks
-                if (number <= 42) {
-                  setUltraSoundWeeks(number);
-                } else {
-                  alert("Please enter a value less than 42");
-                }
-              }}
-            />
-          </View>
-          <View style={styles.formContainer}>
-            <Text
-              style={{
-                fontSize: 16,
-                marginRight: 10,
-              }}
-            >
-              Days
-            </Text>
-            <TextInput
-              style={{
-                height: 40,
-                borderColor: "gray",
-                borderWidth: 1,
-                width: 100,
-              }}
-              maxLength={7}
-              keyboardType="numeric"
-              onChangeText={(number) => {
-                // only check for 7 days
-                if (number <= 7) {
-                  setUltraSoundDays(number);
-                } else {
-                  alert("Please enter a value less than 7");
-                }
-              }}
-            />
-          </View>
-        </>
-      )}
       <Button
         style={{
           width: 200,
@@ -309,15 +223,13 @@ const DateCalculator = () => {
       </Button>
 
       {/* notification to the user  */}
-      <Text
-        style={{
-          fontSize: 10,
-          fontStyle: "italic",
-          textAlign: "center",
-          margin: 10,
-        }}
-      >
-        * This is an estimated value and the actual day may vary.
+      <Text style={{
+        fontSize: 20,
+        fontWeight: "bold",
+        textAlign: "center",
+        margin: 10,
+      }}>
+        This is an estimated value and the actual day may vary.
       </Text>
 
       <Modal

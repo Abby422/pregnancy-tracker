@@ -34,14 +34,14 @@ const DateCalculator = () => {
   const [ultrasound, setUltrasound] = useState(false);
   const [checked, setChecked] = useState("3_days");
   const [selectedOption, setSelectedOption] = useState(null);
-  const [ultrasoundDays, setUltraSoundDays] = useState(0);
-  const [ultrasoundWeeks, setUltraSoundWeeks] = useState(0);
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     setShow(false);
     setDate(currentDate);
   };
+
+
 
   useEffect(() => {
     if (method === "ivf") {
@@ -124,11 +124,8 @@ const DateCalculator = () => {
         dueDate.setDate(dueDate.getDate() + 266);
         break;
       case "ultrasound":
-        //  compute the due date given the number of weeks and days pregnant given the date of utlrasound
-        dueDate = new Date();
-        let givenDate = new Date(date);
-        let numberOfDaysAlreadyPregnant = ultrasoundWeeks*7 + ultrasoundDays;
-        dueDate.setDate(givenDate.getDate() + 266 - numberOfDaysAlreadyPregnant);
+        // Example: Due date is 41 weeks from the ultrasound date
+        dueDate = new Date(date.getTime() + 41 * 7 * 24 * 60 * 60 * 1000);
         break;
       default:
         // Default case, no specific method selected
@@ -256,14 +253,15 @@ const DateCalculator = () => {
                 width: 100,
               }}
               keyboardType="numeric"
-              onChangeText={(number) => {
+              onChangeText={(e) => 
+              {
+                console.log(e.target);
                 // only check for 42 weeks
-                if (number <= 42) {
-                  setUltraSoundWeeks(number);
-                } else {
+                if (e.target.value > 42) {
                   alert("Please enter a value less than 42");
                 }
-              }}
+                }
+              }
             />
           </View>
           <View style={styles.formContainer}>
@@ -284,14 +282,6 @@ const DateCalculator = () => {
               }}
               maxLength={7}
               keyboardType="numeric"
-              onChangeText={(number) => {
-                // only check for 7 days
-                if (number <= 7) {
-                  setUltraSoundDays(number);
-                } else {
-                  alert("Please enter a value less than 7");
-                }
-              }}
             />
           </View>
         </>

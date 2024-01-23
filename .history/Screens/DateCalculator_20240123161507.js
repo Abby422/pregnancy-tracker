@@ -124,11 +124,10 @@ const DateCalculator = () => {
         dueDate.setDate(dueDate.getDate() + 266);
         break;
       case "ultrasound":
-        //  compute the due date given the number of weeks and days pregnant given the date of utlrasound
-        dueDate = new Date();
-        let givenDate = new Date(date);
-        let numberOfDaysAlreadyPregnant = ultrasoundWeeks*7 + ultrasoundDays;
-        dueDate.setDate(givenDate.getDate() + 266 - numberOfDaysAlreadyPregnant);
+        dueDate = new Date(date);
+        dueDate.setDate(
+          dueDate.getDate() + 40 * 7 - ultrasoundWeeks * 7 - ultrasoundDays
+        );
         break;
       default:
         // Default case, no specific method selected

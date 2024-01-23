@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   Modal,
   ScrollView,
-  TextInput,
 } from "react-native";
 import ModalDropdown from "react-native-modal-dropdown";
 import {
@@ -34,13 +33,25 @@ const DateCalculator = () => {
   const [ultrasound, setUltrasound] = useState(false);
   const [checked, setChecked] = useState("3_days");
   const [selectedOption, setSelectedOption] = useState(null);
-  const [ultrasoundDays, setUltraSoundDays] = useState(0);
-  const [ultrasoundWeeks, setUltraSoundWeeks] = useState(0);
+  const dropdownOptions = ["Option 1", "Option 2", "Option 3"];
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     setShow(false);
     setDate(currentDate);
+  };
+
+  const renderRow = (rowData, rowID, highlighted) => {
+    return (
+      <TouchableOpacity>
+        <Text style={{ padding: 10 }}>{rowData}</Text>
+      </TouchableOpacity>
+    );
+  };
+
+  const onSelect = (index, value) => {
+    setSelectedOption(value);
+    // You can perform additional actions here based on the selected value
   };
 
   useEffect(() => {
@@ -124,11 +135,8 @@ const DateCalculator = () => {
         dueDate.setDate(dueDate.getDate() + 266);
         break;
       case "ultrasound":
-        //  compute the due date given the number of weeks and days pregnant given the date of utlrasound
-        dueDate = new Date();
-        let givenDate = new Date(date);
-        let numberOfDaysAlreadyPregnant = ultrasoundWeeks*7 + ultrasoundDays;
-        dueDate.setDate(givenDate.getDate() + 266 - numberOfDaysAlreadyPregnant);
+        // Example: Due date is 41 weeks from the ultrasound date
+        dueDate = new Date(date.getTime() + 41 * 7 * 24 * 60 * 60 * 1000);
         break;
       default:
         // Default case, no specific method selected
@@ -248,22 +256,10 @@ const DateCalculator = () => {
               Weeks
             </Text>
 
-            <TextInput
-              style={{
-                height: 40,
-                borderColor: "gray",
-                borderWidth: 1,
-                width: 100,
-              }}
-              keyboardType="numeric"
-              onChangeText={(number) => {
-                // only check for 42 weeks
-                if (number <= 42) {
-                  setUltraSoundWeeks(number);
-                } else {
-                  alert("Please enter a value less than 42");
-                }
-              }}
+            <RadioButton
+              value="weeks"
+              status={checked === "weeks" ? "checked" : "unchecked"}
+              onPress={() => setChecked("weeks")}
             />
           </View>
           <View style={styles.formContainer}>
@@ -275,23 +271,14 @@ const DateCalculator = () => {
             >
               Days
             </Text>
-            <TextInput
-              style={{
-                height: 40,
-                borderColor: "gray",
-                borderWidth: 1,
-                width: 100,
-              }}
-              maxLength={7}
-              keyboardType="numeric"
-              onChangeText={(number) => {
-                // only check for 7 days
-                if (number <= 7) {
-                  setUltraSoundDays(number);
-                } else {
-                  alert("Please enter a value less than 7");
-                }
-              }}
+
+            <Dropdown
+              options={dropdownOptions}
+              onSelect={onSelect}
+              renderRow={renderRow}
+              textStyle={{ padding: 10 }}
+              dropdownStyle={{ padding: 10, marginTop: 2, marginLeft: -5 }}
+              defaultValue={selectedOption || "Select an option"}
             />
           </View>
         </>

@@ -16,7 +16,7 @@ import {
   List,
 } from "react-native-paper";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import moment from "moment";
+
 const DateCalculator = () => {
   const [method, setMethod] = useState("");
   const [date, setDate] = useState(new Date());
@@ -25,7 +25,6 @@ const DateCalculator = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [minDate, setMinDate] = useState(getDateTenMonthsAgo());
   const [maxDate, setMaxDate] = useState(new Date());
-  const [dueDate, setDueDate] = useState(null);
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -33,11 +32,14 @@ const DateCalculator = () => {
     setDate(currentDate);
   };
 
-  useEffect(() => {
+  useEffect(() => { 
     calculateCalendarValidators(); //
   }, [minDate, maxDate, modalVisible]);
 
-  const calculateCalendarValidators = function (method) {};
+
+  const calculateCalendarValidators = function (method) { 
+
+  }
 
   function getDateTenMonthsAgo() {
     // Get the current date
@@ -80,7 +82,7 @@ const DateCalculator = () => {
   };
 
   const calculateDueDate = (date) => {
-    console.log(date);
+    console.log(date)
     // Add your calculation logic based on the selected method
     let dueDate;
 
@@ -158,7 +160,7 @@ const DateCalculator = () => {
           alignSelf: "center",
         }}
         mode="contained"
-        onPress={() => calculateDueDate(date)}
+        onPress={()=>calculateDueDate(date)}
       >
         Calculate
       </Button>
@@ -172,11 +174,6 @@ const DateCalculator = () => {
         }}
       >
         <View style={styles.modalContainer}>
-          {dueDate && (
-            <Text style={styles.Text}>
-              DUE DATE : {moment(dueDate).format("DD MMM YYYY")}
-            </Text>
-          )}
           <ScrollView contentContainerStyle={styles.modalContent}>
             <List.Item
               title="Period"

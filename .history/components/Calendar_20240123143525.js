@@ -12,7 +12,7 @@ const Calendar = () => {
 
   const getMaxDueDate = () => {
     var currentDate = new Date();
-    currentDate.setMonth(currentDate.getMonth() + 11);
+    currentDate.setMonth(currentDate.getMonth() + 10);
     return currentDate;
    }
 
@@ -66,7 +66,6 @@ const Calendar = () => {
           value={date}
           mode={mode}
           minimumDate={new Date()}
-          maximumDate={getMaxDueDate()}
           is24Hour={true}
           onChange={onChange}
         />

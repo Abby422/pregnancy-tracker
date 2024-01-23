@@ -6,15 +6,8 @@ import { Text, Button } from "react-native-paper";
 
 const Calendar = () => {
   const [date, setDate] = useState(new Date());
-  
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
-
-  const getMaxDueDate = () => {
-    var currentDate = new Date();
-    currentDate.setMonth(currentDate.getMonth() + 11);
-    return currentDate;
-   }
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate;
@@ -65,8 +58,6 @@ const Calendar = () => {
           testID="dateTimePicker"
           value={date}
           mode={mode}
-          minimumDate={new Date()}
-          maximumDate={getMaxDueDate()}
           is24Hour={true}
           onChange={onChange}
         />

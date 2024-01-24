@@ -6,9 +6,9 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Image
 } from "react-native";
 import { WebView } from "react-native-webview";
-
 // Function to calculate the due date and remaining weeks
 const calculateDueDate = (currentDate, pregnancyDuration) => {
   const dueDate = new Date(currentDate);
@@ -21,7 +21,7 @@ const calculateDueDate = (currentDate, pregnancyDuration) => {
 
 
 const Home = () => {
-  const pregnancyDuration = 40; // Adjust this value based on the average pregnancy duration
+  const pregnancyDuration = 40;
   const [article, setArticle] = useState([]);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [dueDate, setDueDate] = useState(null);
@@ -64,6 +64,8 @@ const handleArticlePress = (article) => {
 
   return (
     <ScrollView style={styles.container}>
+      <Text style={{margin: 20, fontWeight: "bold", fontSize: 24}}>Welcome new user </Text>
+      <Image style={styles.image} source={require("../assets/Images/cute-baby.png")} />
       <InfoCard
         style={styles.infoCard}
         label="Due Date"
@@ -142,6 +144,15 @@ const styles = StyleSheet.create({
     marginTop: 10,
     padding: 10,
   },
+  image: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    width: 200,
+    height: 200,
+    marginBottom: 10,
+  },
+  
   infoContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -154,6 +165,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 10,
     marginRight: 10,
+    marginTop: 50,
     elevation: 3,
   },
   articlesContainer: {

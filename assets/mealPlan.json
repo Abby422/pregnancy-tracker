@@ -1,0 +1,92 @@
+[
+    {
+        "meal": "Breakfast",
+        "options": [
+            {
+                "name": "Vanilla Almond Milk Smoothie",
+                "nutrition": "819 calories, 5g fat, 127g carbs, 58g protein, 248mg calcium",
+                "quantity": "1 Serving"
+            },
+            {
+                "name": "Whole Wheat Pancakes with Blueberries",
+                "nutrition": "367 calories, 5g fat, 73g carbs, 10g protein, 8% DV iron",
+                "quantity": "1 Serving"
+            },
+            {
+                "name": "Avocado Toast",
+                "nutrition": "433 calories, 22g fat, 45g carbs, 15g protein, 20% DV fiber",
+                "quantity": "1 Serving"
+            },
+            {
+                "name": "Cherry Chocolate Oatmeal",
+                "nutrition": "408 calories, 14g fat, 67g carbs, 13g protein, 8% DV iron",
+                "quantity": "1 Serving"
+            },
+            {
+                "name": "Cranberry Apple Muffins",
+                "nutrition": "286 calories, 4g fat, 63g carbs, 7g protein, 2% DV iron",
+                "quantity": "1 Muffin"
+            },
+            {
+                "name": "Egg and Cheese Breakfast Burrito",
+                "nutrition": "452 calories, 24g fat, 41g carbs, 23g protein, 6% DV vitamin C",
+                "quantity": "1 Burrito"
+            }
+        ]
+    },
+    {
+        "meal": "Lunch",
+        "options": [
+            {
+                "name": "Greek Chicken Grain Bowl",
+                "nutrition": "475 calories, 19g fat, 51g carbs, 27g protein, 10% DV fiber",
+                "quantity": "1 Bowl"
+            },
+            {
+                "name": "Turkey and Cheese Panini",
+                "nutrition": "399 calories, 16g fat, 41g carbs, 23g protein, 10% DV vitamin C",
+                "quantity": "1 Panini"
+            },
+            {
+                "name": "Veggie Quinoa Salad",
+                "nutrition": "291 calories, 14g fat, 40g carbs, 5g protein, 8% DV fiber",
+                "quantity": "1 Serving"
+            },
+            {
+                "name": "Slow Cooker Black Bean Soup",
+                "nutrition": "235 calories, 2g fat, 41g carbs, 5g protein, 10% DV fiber",
+                "quantity": "1 Bowl"
+            },
+            {
+                "name": "Turkey Meatballs with Pasta",
+                "nutrition": "393 calories, 18g fat, 41g carbs, 23g protein, 6% DV vitamin C",
+                "quantity": "1 Bowl"
+            },
+            {
+                "name": "Bean and Beef Chilli",
+                "nutrition": "425 calories, 15g fat, 53g carbs, 26g protein, 15% DV fiber",
+                "quantity": "1 Serving"
+            }
+        ]
+    },
+    {
+        "meal": "Supper",
+        "options": [
+            {
+                "name": "Baked Salmon with Herb Crust",
+                "nutrition": "341 calories, 23g fat, 0g carbs, 25g protein, 15% DV vitamin C",
+                "quantity": "1 Filet"
+            },
+            {
+                "name": "Lentil Stew",
+                "nutrition": "N/A, 9g fat, 51g carbs, 12g protein, 10% DV fiber",
+                "quantity": "1 Bowl"
+            },
+            {
+                "name": "BBQ Tofu Salad Bowl",
+                "nutrition": "440 calories, 17g fat, 49g carbs, 26g protein, 15% DV fiber",
+                "quantity": "1 Bowl"
+            }
+        ]
+    }
+]

@@ -5,6 +5,7 @@ import Register from "./Screens/Register";
 import Home from "./Screens/Home";
 import { ArticleDetailScreen } from './Screens/Home';
 import OnlineCommunity from "./Screens/OnlineCommunity";
+import Posts from './Screens/Posts';
 import Profile from './Screens/Profile';
 import { FIREBASE_APP } from './Services/firebaseConfig';
 import { getAuth } from 'firebase/auth';
@@ -15,7 +16,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import OnBoarding from './Screens/OnBoarding';
 import MealPlanScreen from './Screens/MealPlanScreen';
 import DateCalculator from './Screens/DateCalculator';
-import { MD3Colors } from 'react-native-paper';
+import { MD3Colors, PaperProvider } from 'react-native-paper';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -69,12 +71,18 @@ export default function App() {
 
     const MainStack = () => {
       return (
-        <Tab.Navigator screenOptions={tabOptionStyle}>
-          <Stack.Screen name="Home" component={Home} />
+          <Tab.Navigator screenOptions={tabOptionStyle}>
+          <Tab.Screen name="Home" component={Home} options={{
+            tabBarIcon : ({color, size}) => (
+              <MaterialCommunityIcons name="home" color={color} size={size} />
+            ),
+            } 
+          } />
           <Stack.Screen name="OnlineCommunity" component={OnlineCommunity} />
           <Stack.Screen name="Profile" component={Profile} />
           <Stack.Screen name="MealPlanScreen" component={MealPlanScreen} />
         </Tab.Navigator>
+        
       );
     };
 
@@ -82,26 +90,29 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={screenOptionStyle}>
-        {user ? (
-          <>
-            <Stack.Screen name="Main" component={MainStack} />
-            <Stack.Screen
-              name="ArticleDetailScreen"
-              component={ArticleDetailScreen}
-            />
-          </>
-        ) : (
-          <>
-            <Stack.Screen name="onboarding" component={OnBoarding} />
+      <PaperProvider>
+        <Stack.Navigator screenOptions={screenOptionStyle}>
+          {user ? (
+            <>
+              <Stack.Screen name="Main" component={MainStack} />
+              <Stack.Screen
+                name="ArticleDetailScreen"
+                component={ArticleDetailScreen}
+              />
+              <Stack.Screen name="Posts" component={Posts} />
+            </>
+          ) : (
+            <>
+              <Stack.Screen name="onboarding" component={OnBoarding} />
 
-            <Stack.Screen name="dateCalculator" component={DateCalculator} />
+              <Stack.Screen name="dateCalculator" component={DateCalculator} />
 
-            <Stack.Screen name="Login" component={Login} />
-            <Stack.Screen name="Register" component={Register} />
-          </>
-        )}
-      </Stack.Navigator>
+              <Stack.Screen name="Login" component={Login} />
+              <Stack.Screen name="Register" component={Register} />
+            </>
+          )}
+        </Stack.Navigator>
+      </PaperProvider>
     </NavigationContainer>
   );
 }

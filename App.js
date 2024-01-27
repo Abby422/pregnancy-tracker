@@ -18,6 +18,8 @@ import MealPlanScreen from './Screens/MealPlanScreen';
 import DateCalculator from './Screens/DateCalculator';
 import { MD3Colors, PaperProvider } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Tools from './Screens/Tools';
+import Exercise from './Screens/Exercise';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -37,10 +39,10 @@ export default function App() {
   const tabOptionStyle = {
   headerShown: false,
   tabBarStyle: {
-    backgroundColor: "#CCCCCC",
+    backgroundColor: "#fff",
     color: "#FFFFFF",
     tabBarIcon : {
-      color: "#FFFFFF",
+      color: "#000",
       focused: "#000000",
       size: 30,
     },
@@ -78,9 +80,23 @@ export default function App() {
             ),
             } 
           } />
-          <Stack.Screen name="OnlineCommunity" component={OnlineCommunity} />
-          <Stack.Screen name="Profile" component={Profile} />
-          <Stack.Screen name="MealPlanScreen" component={MealPlanScreen} />
+          <Stack.Screen name="Tools" component={Tools} options={
+            {
+              tabBarIcon : ({color, size}) => (
+                <MaterialCommunityIcons name="apps" color={color} size={size} />
+              ),
+            }
+          } />
+          <Stack.Screen name="OnlineCommunity" component={OnlineCommunity} options={{
+            tabBarIcon : ({color, size}) => (
+              <MaterialCommunityIcons name="forum" color={color} size={size} />
+            ),
+          }} />
+          <Stack.Screen name="Profile" component={Profile} options={{
+            tabBarIcon: ({color, size}) => (
+              <MaterialCommunityIcons name="account" color={color} size={size} />
+            ),
+          }} />
         </Tab.Navigator>
         
       );
@@ -100,6 +116,8 @@ export default function App() {
                 component={ArticleDetailScreen}
               />
               <Stack.Screen name="Posts" component={Posts} />
+              <Stack.Screen name="MealPlanScreen" component={MealPlanScreen} />
+              <Stack.Screen name="Exercise" component={Exercise} />
             </>
           ) : (
             <>

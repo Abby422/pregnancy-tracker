@@ -1,6 +1,8 @@
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from "react-native";
+
+const {width, height} = Dimensions.get('screen');
 
 const Tools = () => {
   const tools = [
@@ -10,6 +12,8 @@ const Tools = () => {
     { title: "Hospital Bag Checklist", icon: "🎒", screen: "HospitalBag" },
     { title: "Nutrition Guide", icon: "🍎", screen: "MealPlanScreen" },
     { title: "Exercise Guide", icon: "🏃", screen: "Exercise" },
+    { title: "Contraction Timer", icon: "👶", screen: "ContractionTimer"},
+    { title: "Symptom Tracker", icon: "🤒", screen: "SymptomTracker"},
   ];
   const navigation = useNavigation();
 

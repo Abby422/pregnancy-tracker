@@ -1,33 +1,31 @@
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Login from './Screens/Login';
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import Login from "./Screens/Login";
 import Register from "./Screens/Register";
 import Home from "./Screens/Home";
-import { ArticleDetailScreen } from './Screens/Home';
+import { ArticleDetailScreen } from "./Screens/Home";
 import OnlineCommunity from "./Screens/OnlineCommunity";
-import Posts from './Screens/Posts';
-import Profile from './Screens/Profile';
-import { FIREBASE_APP } from './Services/firebaseConfig';
-import { getAuth } from 'firebase/auth';
-import { useEffect, useState } from 'react';
-import { ActivityIndicator } from 'react-native';
-import { onAuthStateChanged } from 'firebase/auth';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import OnBoarding from './Screens/OnBoarding';
-import MealPlanScreen from './Screens/MealPlanScreen';
-import DateCalculator from './Screens/DateCalculator';
-import { MD3Colors, PaperProvider } from 'react-native-paper';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Tools from './Screens/Tools';
-import Exercise from './Screens/Exercise';
+import Posts from "./Screens/Posts";
+import Profile from "./Screens/Profile";
+import { FIREBASE_APP } from "./Services/firebaseConfig";
+import { getAuth } from "firebase/auth";
+import { useEffect, useState } from "react";
+import { ActivityIndicator } from "react-native";
+import { onAuthStateChanged } from "firebase/auth";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import OnBoarding from "./Screens/OnBoarding";
+import MealPlanScreen from "./Screens/MealPlanScreen";
+import DateCalculator from "./Screens/DateCalculator";
+import { MD3Colors, PaperProvider } from "react-native-paper";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import Tools from "./Screens/Tools";
+import Exercise from "./Screens/Exercise";
+import MotherDetailsScreen from "./Screens/MotherDetailsScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const auth = getAuth(FIREBASE_APP);
 
-
-
- 
 export default function App() {
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState(null);
@@ -37,18 +35,17 @@ export default function App() {
   };
 
   const tabOptionStyle = {
-  headerShown: false,
-  tabBarStyle: {
-    backgroundColor: "#fff",
-    color: "#FFFFFF",
-    tabBarIcon : {
-      color: "#000",
-      focused: "#000000",
-      size: 30,
-    },
+    headerShown: false,
+    tabBarStyle: {
+      backgroundColor: "#fff",
+      color: "#FFFFFF",
+      tabBarIcon: {
+        color: "#000",
+        focused: "#000000",
+        size: 30,
+      },
     },
   };
-
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -56,53 +53,66 @@ export default function App() {
       setUser(user);
       if (initializing) setInitializing(false);
     });
-    }, []);
-
-
+  }, []);
 
   if (initializing) {
     () => {
-      return(
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      return (
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
           <ActivityIndicator size="large" color="#0000ff" />
         </View>
       );
     };
   }
 
-
-    const MainStack = () => {
-      return (
-          <Tab.Navigator screenOptions={tabOptionStyle}>
-          <Tab.Screen name="Home" component={Home} options={{
-            tabBarIcon : ({color, size}) => (
+  const MainStack = () => {
+    return (
+      <Tab.Navigator screenOptions={tabOptionStyle}>
+        <Tab.Screen
+          name="Home"
+          component={Home}
+          options={{
+            tabBarIcon: ({ color, size }) => (
               <MaterialCommunityIcons name="home" color={color} size={size} />
             ),
-            } 
-          } />
-          <Stack.Screen name="Tools" component={Tools} options={
-            {
-              tabBarIcon : ({color, size}) => (
-                <MaterialCommunityIcons name="apps" color={color} size={size} />
-              ),
-            }
-          } />
-          <Stack.Screen name="OnlineCommunity" component={OnlineCommunity} options={{
-            tabBarIcon : ({color, size}) => (
+          }}
+        />
+        <Stack.Screen
+          name="Tools"
+          component={Tools}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name="apps" color={color} size={size} />
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="OnlineCommunity"
+          component={OnlineCommunity}
+          options={{
+            tabBarIcon: ({ color, size }) => (
               <MaterialCommunityIcons name="forum" color={color} size={size} />
             ),
-          }} />
-          <Stack.Screen name="Profile" component={Profile} options={{
-            tabBarIcon: ({color, size}) => (
-              <MaterialCommunityIcons name="account" color={color} size={size} />
+          }}
+        />
+        <Stack.Screen
+          name="Profile"
+          component={Profile}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons
+                name="account"
+                color={color}
+                size={size}
+              />
             ),
-          }} />
-        </Tab.Navigator>
-        
-      );
-    };
-
-
+          }}
+        />
+      </Tab.Navigator>
+    );
+  };
 
   return (
     <NavigationContainer>
@@ -114,6 +124,10 @@ export default function App() {
               <Stack.Screen
                 name="ArticleDetailScreen"
                 component={ArticleDetailScreen}
+              />
+              <Stack.Screen
+                name="MotherDetailsScreen"
+                component={MotherDetailsScreen}
               />
               <Stack.Screen name="Posts" component={Posts} />
               <Stack.Screen name="MealPlanScreen" component={MealPlanScreen} />
@@ -134,4 +148,3 @@ export default function App() {
     </NavigationContainer>
   );
 }
-

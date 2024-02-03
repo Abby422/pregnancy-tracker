@@ -1,7 +1,9 @@
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  getAuth
+  getAuth,
+  updateProfile
+
 } from "firebase/auth";
 import { FIREBASE_APP } from "./firebaseConfig";
 
@@ -14,6 +16,9 @@ export const signIn = async (email, password) => {
       // Signed in
       const user = userCredential.user;
       console.log("User signed in successfully" + user);
+
+      const additionalUserInfo = userCredential.additionalUserInfo;
+      console.log("Additional user info:", additionalUserInfo);
       return user;
       
     })
@@ -25,21 +30,26 @@ export const signIn = async (email, password) => {
   }
 };
 
-export const register = async (email, password) => {
+export const register = async (email, password, dueDate) => {
   try {
-    console.log(email, password);
+    // Create user with email and password
     const response = await createUserWithEmailAndPassword(
       auth,
       email,
       password
     );
+
+    // Get user from response
     const user = response.user;
-    console.log("User registered successfully" + user);
+
+    await updateProfile(user, {
+      dueDate
+    });
+
+    console.log("User registered successfully", user);
     return user;
   } catch (error) {
-    console.log(
-      "Error Code is " + error.code + "Error Message is " + error.message
-    );
-    alert("Registration failed" + error.message);
+    console.error("Registration failed", error);
+    throw error;
   }
 };

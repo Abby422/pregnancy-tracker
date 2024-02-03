@@ -6,9 +6,14 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  Image
+  Image,
+  Dimensions,
 } from "react-native";
 import { WebView } from "react-native-webview";
+import Svg, { Path } from "react-native-svg";
+import { pregnancyData } from "../lib/pregnancy";
+import { Divider } from "react-native-paper";
+
 // Function to calculate the due date and remaining weeks
 const calculateDueDate = (currentDate, pregnancyDuration) => {
   const dueDate = new Date(currentDate);
@@ -19,7 +24,6 @@ const calculateDueDate = (currentDate, pregnancyDuration) => {
   return { dueDate, remainingWeeks };
 };
 
-
 const Home = () => {
   const pregnancyDuration = 40;
   const [article, setArticle] = useState([]);
@@ -28,15 +32,17 @@ const Home = () => {
   const [remainingWeeks, setRemainingWeeks] = useState(null);
   const navigation = useNavigation();
 
-const handleArticlePress = (article) => {
-  navigation.navigate("ArticleDetailScreen", {
-    title: article.headline,
-    url: article.url,
-  });
-  console.log(`Article ${article.headline} pressed`);
-};
+  const handleArticlePress = (id) => {
+    navigation.navigate("ArticleDetailScreen", {
+      id: id,
+    });
+  };
 
-
+  const handleMotherDetailsPage = (id) => {
+    navigation.navigate("MotherDetailsScreen", {
+      id: id,
+    });
+  }
   useEffect(() => {
     const { dueDate, remainingWeeks } = calculateDueDate(
       currentDate,
@@ -45,54 +51,107 @@ const handleArticlePress = (article) => {
     setDueDate(dueDate);
     setRemainingWeeks(remainingWeeks);
 
-    getArticles();
-    console.log(getArticles());
+    console.log(babyData);
   }, [currentDate]);
-  const getArticles = async () => {
-    try {
-      const response = await fetch("https://api.nhs.uk/pregnancy/", { method: 'GET', headers: { 'subscription-key': 'a0c4c4c4c4c44c4c8c4c4c4c4c4c4c4c' }});
-      const data = await response.json();
-      console.log("data",data.mainEntityOfPage[1].mainEntityOfPage);
 
-      const articles = data.mainEntityOfPage[1].mainEntityOfPage;
+  const babyData = () => {
+    pregnancyData.forEach((week) => {
+      // Extract week number from the object keys
+      const weekNumber = week.id;
 
-      setArticle(articles || []);
-    } catch (error) {
-      console.log("Error fetching Data", error);
-    }
+      // Extract Baby and Mother information for the current week
+      const babyInfo = week.Baby;
+
+      // Log or process babyInfo and motherInfo as needed
+      console.log(`Week ${weekNumber}`);
+      console.log("Baby Info:", babyInfo);
+      // console.log("Mother Info:", motherInfo);
+      setArticle(babyInfo || []);
+    });
   };
 
+  // const getArticles = async () => {
+  //   try {
+  //     const response = await fetch("https://api.nhs.uk/pregnancy/", { method: 'GET', headers: { 'subscription-key': 'a0c4c4c4c4c44c4c8c4c4c4c4c4c4c4c' }});
+  //     const data = await response.json();
+  //     console.log("data",data.mainEntityOfPage[1].mainEntityOfPage);
+
+  //     const articles = data.mainEntityOfPage[1].mainEntityOfPage;
+
+  //     setArticle(articles || []);
+  //   } catch (error) {
+  //     console.log("Error fetching Data", error);
+  //   }
+  // };
+
   return (
-    <ScrollView style={styles.container}>
-      <Text style={{margin: 20, fontWeight: "bold", fontSize: 24}}>Welcome new user </Text>
-      <Image style={styles.image} source={require("../assets/Images/cute-baby.png")} />
-      <InfoCard
-        style={styles.infoCard}
-        label="Due Date"
-        value={dueDate ? dueDate.toDateString() : ""}
-      />
-      <View style={styles.infoContainer}>
-        <InfoCard
-          label="Weeks Pregnant"
-          value={`${pregnancyDuration - remainingWeeks}`}
+    <>
+      <Svg
+        height={200}
+        width={Dimensions.get("screen").width}
+        viewBox="0 0 1440 320"
+        style={styles.topWavy}
+      >
+        <Path
+          fill="#BBE7FE"
+          d="M0,192L60,170.7C120,149,240,107,360,112C480,117,600,171,720,197.3C840,224,960,224,1080,208C1200,192,1320,160,1380,144L1440,128L1440,0L1380,0C1320,0,1200,0,1080,0C960,0,840,0,720,0C600,0,480,0,360,0C240,0,120,0,60,0L0,0Z"
         />
-
-        <InfoCard
-          label="Remaining Weeks"
-          value={remainingWeeks !== null ? remainingWeeks.toString() : ""}
+      </Svg>
+      <ScrollView style={styles.container}>
+        <Text style={{ margin: 20, fontWeight: "bold", fontSize: 24 }}>
+          Welcome {" John Doe"}
+        </Text>
+        <Image
+          style={styles.image}
+          source={require("../assets/Images/cute-baby.png")}
         />
-      </View>
-
-      <View style={styles.articlesContainer}>
-        {article.map((article, index) => (
-          <ArticleCard
-            key={index}
-            title={article.headline}
-            onPress={() => handleArticlePress(article)}
+        <InfoCard
+          style={styles.infoCard}
+          label="Due Date"
+          value={dueDate ? dueDate.toDateString() : ""}
+        />
+        <View style={styles.infoContainer}>
+          <InfoCard
+            label="Weeks Pregnant"
+            value={`${pregnancyDuration - remainingWeeks}`}
           />
-        ))}
-      </View>
-    </ScrollView>
+
+          <InfoCard
+            label="Remaining Weeks"
+            value={remainingWeeks !== null ? remainingWeeks.toString() : ""}
+          />
+        </View>
+
+        <View style={styles.articlesContainer}>
+          <Text style={{ margin: 20, fontWeight: "bold", fontSize: 24 }}>
+            Info about your baby
+          </Text>
+          {pregnancyData.map((week) => {
+            return (
+              <ArticleCard
+                key={week.id}
+                Heading={week.Baby.Heading}
+                onPress={() => handleArticlePress(week.id)}
+              />
+            );
+          })}
+        </View>
+           <View style={styles.articlesContainer}>
+          <Text style={{ margin: 20, fontWeight: "bold", fontSize: 24 }}>
+            Info about your body
+          </Text>
+          {pregnancyData.map((week) => {
+            return (
+              <ArticleCard
+                key={week.id}
+                Heading={week.mother.heading}
+                onPress={() => handleMotherDetailsPage(week.id)}
+              />
+            );
+          })}
+        </View>
+      </ScrollView>
+    </>
   );
 };
 
@@ -104,36 +163,31 @@ const InfoCard = ({ label, value }) => (
 );
 
 // Component for displaying articles
-const ArticleCard = ({ title, onPress }) => (
+const ArticleCard = ({ Heading, onPress }) => (
   <TouchableOpacity style={styles.card} onPress={onPress}>
-    <Text style={styles.cardTitle}>{title}</Text>
+    <Text style={styles.cardTitle}>{Heading}</Text>
     <Text style={styles.readMore}>Read More</Text>
   </TouchableOpacity>
 );
 
-
 const ArticleDetailScreen = ({ route }) => {
-  const { title, url } = route.params;
-  const [articleContent, setArticleContent] = useState("");
+  const { id } = route.params;
+  // const [articleContent, setArticleContent] = useState("");
 
-  useEffect(() => {
-    const fetchArticleContent = async () => {
-      try {
-        const response = await fetch(url);
-        const data = await response.text();
-        setArticleContent(data);
-      } catch (error) {
-        console.log("Error fetching article content", error);
-      }
-    };
-
-    fetchArticleContent();
-  }, [url]);
+  const data = pregnancyData.find((week) => week.id === id);
+  const Baby = data.Baby;
+  console.log("data", Baby);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.articleDetailTitle}>{title}</Text>
-      <WebView source={{ html: articleContent }} style={styles.webView} />
+      <Text style={styles.articleDetailTitle}>{Baby.Heading}</Text>
+      <View>
+        <Text>{Baby.Reviewed}</Text>
+        <Text>{Baby.Written}</Text>
+        <Divider />
+        <Text>{Baby.subHeading}</Text>
+        <Text>{Baby.text}</Text>
+      </View>
     </View>
   );
 };
@@ -142,7 +196,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 10,
-    padding: 10,
+    paddingTop: 10,
+  },
+  topWavy: {
+    top: 0,
+    position: "absolute",
   },
   image: {
     flex: 1,
@@ -152,7 +210,7 @@ const styles = StyleSheet.create({
     height: 200,
     marginBottom: 10,
   },
-  
+
   infoContainer: {
     flexDirection: "row",
     justifyContent: "space-between",

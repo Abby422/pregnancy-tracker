@@ -138,7 +138,7 @@ const DateCalculator = () => {
 
     // Due date is calculated, you can use it as needed
     console.log("Due Date:", dueDate);
-    return dueDate;
+    setDueDate(dueDate);
   };
 
   return (

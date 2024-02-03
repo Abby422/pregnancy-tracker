@@ -39,7 +39,7 @@ function Register() {
       const trimmedEmail = email.trim();
       const trimmedPassword = password.trim();
 
-      const user = await register(trimmedEmail, trimmedPassword);
+      const user = await register(trimmedEmail, trimmedPassword, dueDate);
       if (user) {
         navigation.navigate("Main");
       }

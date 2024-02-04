@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
@@ -8,11 +8,14 @@ import {
   ScrollView,
   Image,
   Dimensions,
+  StatusBar,
 } from "react-native";
-import { WebView } from "react-native-webview";
+import { FIREBASE_APP } from "../Services/firebaseConfig";
 import Svg, { Path } from "react-native-svg";
 import { pregnancyData } from "../lib/pregnancy";
 import { Divider } from "react-native-paper";
+import { fetchUserData } from "../Services/fireStore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 // Function to calculate the due date and remaining weeks
 const calculateDueDate = (currentDate, pregnancyDuration) => {
@@ -23,9 +26,11 @@ const calculateDueDate = (currentDate, pregnancyDuration) => {
   );
   return { dueDate, remainingWeeks };
 };
-
+const auth = getAuth(FIREBASE_APP);
 const Home = () => {
+    const [initializing, setInitializing] = useState(true);
   const pregnancyDuration = 40;
+  const [userId, setUserId] = useState(null);
   const [article, setArticle] = useState([]);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [dueDate, setDueDate] = useState(null);
@@ -42,17 +47,22 @@ const Home = () => {
     navigation.navigate("MotherDetailsScreen", {
       id: id,
     });
-  }
+  };
   useEffect(() => {
-    const { dueDate, remainingWeeks } = calculateDueDate(
-      currentDate,
-      pregnancyDuration
-    );
-    setDueDate(dueDate);
-    setRemainingWeeks(remainingWeeks);
+    onAuthStateChanged(auth, (user) => {
+      console.log("userid", user.uid);
+      setUserId(user.uid);
+      if (initializing) setInitializing(false);
+    });
+    const fetchedUserData = async () => {
+      const userData = await fetchUserData(userId);
+      if (userData) {
+        setDueDate(userData.dueDate);
+      }
+    };
 
-    console.log(babyData);
-  }, [currentDate]);
+    fetchedUserData();
+  }, [userId]);
 
   const babyData = () => {
     pregnancyData.forEach((week) => {
@@ -83,33 +93,40 @@ const Home = () => {
   //     console.log("Error fetching Data", error);
   //   }
   // };
-
+  StatusBar.setHidden(true);
   return (
     <>
-      <Svg
-        height={200}
-        width={Dimensions.get("screen").width}
-        viewBox="0 0 1440 320"
-        style={styles.topWavy}
-      >
-        <Path
-          fill="#BBE7FE"
-          d="M0,192L60,170.7C120,149,240,107,360,112C480,117,600,171,720,197.3C840,224,960,224,1080,208C1200,192,1320,160,1380,144L1440,128L1440,0L1380,0C1320,0,1200,0,1080,0C960,0,840,0,720,0C600,0,480,0,360,0C240,0,120,0,60,0L0,0Z"
-        />
-      </Svg>
       <ScrollView style={styles.container}>
-        <Text style={{ margin: 20, fontWeight: "bold", fontSize: 24 }}>
+        <View style={styles.box}>
+          <Svg
+            height={200}
+            width={Dimensions.get("screen").width}
+            viewBox="0 0 1440 320"
+            style={styles.topWavy}
+          >
+            <Path
+              fill="#f3daff"
+              fill-opacity="1"
+              d="M0,256L34.3,245.3C68.6,235,137,213,206,208C274.3,203,343,213,411,234.7C480,256,549,288,617,277.3C685.7,267,754,213,823,197.3C891.4,181,960,203,1029,229.3C1097.1,256,1166,288,1234,272C1302.9,256,1371,192,1406,160L1440,128L1440,0L1405.7,0C1371.4,0,1303,0,1234,0C1165.7,0,1097,0,1029,0C960,0,891,0,823,0C754.3,0,686,0,617,0C548.6,0,480,0,411,0C342.9,0,274,0,206,0C137.1,0,69,0,34,0L0,0Z"
+            />
+          </Svg>
+        </View>
+
+        <Text
+          style={{
+            fontWeight: "bold",
+            fontSize: 24,
+            marginLeft: 20,
+            color: "#2e004d",
+          }}
+        >
           Welcome {" John Doe"}
         </Text>
         <Image
           style={styles.image}
           source={require("../assets/Images/cute-baby.png")}
         />
-        <InfoCard
-          style={styles.infoCard}
-          label="Due Date"
-          value={dueDate ? dueDate.toDateString() : ""}
-        />
+        <InfoCard style={styles.infoCard} label="Due Date" value={dueDate} />
         <View style={styles.infoContainer}>
           <InfoCard
             label="Weeks Pregnant"
@@ -136,7 +153,7 @@ const Home = () => {
             );
           })}
         </View>
-           <View style={styles.articlesContainer}>
+        <View style={styles.articlesContainer}>
           <Text style={{ margin: 20, fontWeight: "bold", fontSize: 24 }}>
             Info about your body
           </Text>
@@ -195,8 +212,11 @@ const ArticleDetailScreen = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 10,
-    paddingTop: 10,
+    backgroundColor: "#ffffff",
+  },
+  box: {
+    backgroundColor: "#f3daff",
+    height: 80,
   },
   topWavy: {
     top: 0,

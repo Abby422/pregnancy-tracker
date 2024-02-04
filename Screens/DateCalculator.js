@@ -21,7 +21,9 @@ import {
 import DateTimePicker from "@react-native-community/datetimepicker";
 import moment from "moment";
 import Dropdown from "../components/DropDown";
+import { useNavigation } from "@react-navigation/native";
 const DateCalculator = () => {
+  const navigation = useNavigation();
   const [method, setMethod] = useState("");
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState("date");
@@ -96,6 +98,11 @@ const DateCalculator = () => {
     }
   };
 
+  const routeToRegistration = (dueDate) => {
+    navigation.navigate("Register", {
+      dueDate : dueDate,
+    });
+  }
   const calculateDueDate = (date) => {
     console.log(date);
     // Add your calculation logic based on the selected method
@@ -139,6 +146,8 @@ const DateCalculator = () => {
     // Due date is calculated, you can use it as needed
     console.log("Due Date:", dueDate);
     setDueDate(dueDate);
+
+    dueDate && routeToRegistration(dueDate.toDateString());
   };
 
   return (

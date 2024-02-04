@@ -12,11 +12,13 @@ import { Button, MD3Colors } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import { register } from "../Services/firebaseAuth";
 
-function Register() {
+function Register({route}) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
+  const {dueDate} = route.params;
+
 
   const handleRegistration = async () => {
     setLoading(true);
@@ -38,7 +40,11 @@ function Register() {
       // remove spaces from email
       const trimmedEmail = email.trim();
       const trimmedPassword = password.trim();
-
+      console.log("This si in the register screen", dueDate)
+      if (!dueDate) {
+        alert("Please select your due date");
+        return;
+      }
       const user = await register(trimmedEmail, trimmedPassword, dueDate);
       if (user) {
         navigation.navigate("Main");
@@ -56,6 +62,7 @@ function Register() {
 
   return (
     <View style={styles.container}>
+    <Text style={{ fontSize: 30, fontWeight: "bold" }}>{dueDate}</Text>
       <KeyboardAvoidingView behavior="padding" style={styles.innerContainer}>
         <Image
           source={require("../assets/Images/cute-baby.png")}

@@ -9,7 +9,7 @@ import Posts from "./Screens/Posts";
 import Profile from "./Screens/Profile";
 import { FIREBASE_APP } from "./Services/firebaseConfig";
 import { getAuth } from "firebase/auth";
-import { useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { ActivityIndicator } from "react-native";
 import { onAuthStateChanged } from "firebase/auth";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -25,6 +25,7 @@ import MotherDetailsScreen from "./Screens/MotherDetailsScreen";
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const auth = getAuth(FIREBASE_APP);
+export const UserContext = createContext();
 
 export default function App() {
   const [initializing, setInitializing] = useState(true);
@@ -69,7 +70,7 @@ export default function App() {
 
   const MainStack = () => {
     return (
-      <Tab.Navigator screenOptions={tabOptionStyle}>
+        <Tab.Navigator screenOptions={tabOptionStyle}>
         <Tab.Screen
           name="Home"
           component={Home}
@@ -111,6 +112,7 @@ export default function App() {
           }}
         />
       </Tab.Navigator>
+      
     );
   };
 

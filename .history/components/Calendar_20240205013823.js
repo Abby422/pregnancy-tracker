@@ -24,7 +24,7 @@ const Calendar = () => {
       : date;
 
     // navigate to register with the due date
-    setShow(false);
+    setMode("empty");
     setDate(currentDate);
     navigation.navigate("Register", { dueDate: currentDate.toDateString() });
   };

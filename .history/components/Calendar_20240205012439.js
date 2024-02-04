@@ -3,12 +3,10 @@ import React, { useState } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, Button } from "react-native-paper";
-import { useNavigation } from "@react-navigation/native";
 
 const Calendar = () => {
-  const navigation = useNavigation();
   const [date, setDate] = useState(new Date());
-
+  
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
 
@@ -16,17 +14,12 @@ const Calendar = () => {
     var currentDate = new Date();
     currentDate.setMonth(currentDate.getMonth() + 11);
     return currentDate;
-  };
+   }
 
-  const onChange = (event) => {
-    const currentDate = event.nativeEvent.timestamp
-      ? new Date(event.nativeEvent.timestamp)
-      : date;
-
-    // navigate to register with the due date
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate;
     setShow(false);
     setDate(currentDate);
-    navigation.navigate("Register", { dueDate: currentDate.toDateString() });
   };
 
   const showMode = (currentMode) => {
@@ -52,7 +45,6 @@ const Calendar = () => {
         style={{
           width: "auto",
           alignSelf: "center",
-          marginBottom: 10,
         }}
         mode="contained"
       >

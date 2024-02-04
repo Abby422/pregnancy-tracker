@@ -82,7 +82,19 @@ const Home = () => {
     });
   };
 
-  
+  // const getArticles = async () => {
+  //   try {
+  //     const response = await fetch("https://api.nhs.uk/pregnancy/", { method: 'GET', headers: { 'subscription-key': 'a0c4c4c4c4c44c4c8c4c4c4c4c4c4c4c' }});
+  //     const data = await response.json();
+  //     console.log("data",data.mainEntityOfPage[1].mainEntityOfPage);
+
+  //     const articles = data.mainEntityOfPage[1].mainEntityOfPage;
+
+  //     setArticle(articles || []);
+  //   } catch (error) {
+  //     console.log("Error fetching Data", error);
+  //   }
+  // };
   StatusBar.setHidden(true);
   return (
     <>

@@ -17,10 +17,18 @@ import { Divider } from "react-native-paper";
 import { fetchUserData } from "../Services/fireStore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
-
+// Function to calculate the due date and remaining weeks
+const calculateDueDate = (currentDate, pregnancyDuration) => {
+  const dueDate = new Date(currentDate);
+  dueDate.setDate(dueDate.getDate() + pregnancyDuration * 7);
+  const remainingWeeks = Math.ceil(
+    (dueDate - currentDate) / (1000 * 60 * 60 * 24 * 7)
+  );
+  return { dueDate, remainingWeeks };
+};
 const auth = getAuth(FIREBASE_APP);
 const Home = () => {
-  const [initializing, setInitializing] = useState(true);
+    const [initializing, setInitializing] = useState(true);
   const pregnancyDuration = 40;
   const [userId, setUserId] = useState(null);
   const [article, setArticle] = useState([]);
@@ -33,16 +41,6 @@ const Home = () => {
     navigation.navigate("ArticleDetailScreen", {
       id: id,
     });
-  };
-
-  // Function to calculate the due date and remaining weeks
-  const calculateDueDate = (currentDate, pregnancyDuration) => {
-    const dueDate = new Date(currentDate);
-    dueDate.setDate(dueDate.getDate() + pregnancyDuration * 7);
-    const remainingWeeks = Math.ceil(
-      (dueDate - currentDate) / (1000 * 60 * 60 * 24 * 7)
-    );
-    return { dueDate, remainingWeeks };
   };
 
   const handleMotherDetailsPage = (id) => {
@@ -82,7 +80,19 @@ const Home = () => {
     });
   };
 
-  
+  // const getArticles = async () => {
+  //   try {
+  //     const response = await fetch("https://api.nhs.uk/pregnancy/", { method: 'GET', headers: { 'subscription-key': 'a0c4c4c4c4c44c4c8c4c4c4c4c4c4c4c' }});
+  //     const data = await response.json();
+  //     console.log("data",data.mainEntityOfPage[1].mainEntityOfPage);
+
+  //     const articles = data.mainEntityOfPage[1].mainEntityOfPage;
+
+  //     setArticle(articles || []);
+  //   } catch (error) {
+  //     console.log("Error fetching Data", error);
+  //   }
+  // };
   StatusBar.setHidden(true);
   return (
     <>
@@ -177,7 +187,27 @@ const ArticleCard = ({ Heading, onPress }) => (
   </TouchableOpacity>
 );
 
+const ArticleDetailScreen = ({ route }) => {
+  const { id } = route.params;
+  // const [articleContent, setArticleContent] = useState("");
 
+  const data = pregnancyData.find((week) => week.id === id);
+  const Baby = data.Baby;
+  console.log("data", Baby);
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.articleDetailTitle}>{Baby.Heading}</Text>
+      <View>
+        <Text>{Baby.Reviewed}</Text>
+        <Text>{Baby.Written}</Text>
+        <Divider />
+        <Text>{Baby.subHeading}</Text>
+        <Text>{Baby.text}</Text>
+      </View>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -256,3 +286,4 @@ const styles = StyleSheet.create({
 });
 
 export default Home;
+export { ArticleDetailScreen };

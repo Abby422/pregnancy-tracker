@@ -1,5 +1,5 @@
 import { StyleSheet, TouchableOpacity, View } from "react-native";
-import { MD3Colors, Avatar, Button, Card, Text } from "react-native-paper";
+import {   MD3Colors, Avatar, Button, Card, Text } from "react-native-paper";
 import Calendar from "../components/Calendar";
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -19,7 +19,10 @@ const OnBoarding = () => {
             </Text>
           </Card.Content>
           <Card.Actions>
-            <Calendar />
+            <Calendar
+              
+            />
+            
           </Card.Actions>
         </Card>
       </View>
@@ -75,6 +78,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "600",
     textAlign: "center",
-    marginVertical: 10,
+    marginVertical: 10, 
   },
 });

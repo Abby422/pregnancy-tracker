@@ -6,28 +6,28 @@ import { Text, Button } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 
 const Calendar = () => {
-  const navigation = useNavigation();
   const [date, setDate] = useState(new Date());
-
+  
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
 
   const getMaxDueDate = () => {
+    const navigation = useNavigation();
     var currentDate = new Date();
     currentDate.setMonth(currentDate.getMonth() + 11);
     return currentDate;
-  };
+   }
 
-  const onChange = (event) => {
-    const currentDate = event.nativeEvent.timestamp
-      ? new Date(event.nativeEvent.timestamp)
-      : date;
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate;
+    setShow(false);
 
     // navigate to register with the due date
-    setShow(false);
     setDate(currentDate);
-    navigation.navigate("Register", { dueDate: currentDate.toDateString() });
+    navigation.navigate("Login");
+
   };
+
 
   const showMode = (currentMode) => {
     setShow(true);

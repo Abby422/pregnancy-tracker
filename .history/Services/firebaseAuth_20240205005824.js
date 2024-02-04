@@ -31,13 +31,13 @@ export const signIn = async (email, password) => {
     alert("Login in failed" + error.message);
   }
 };
+
 export const register = async (email, password, dueDate) => {
   const usersCollection = collection(db, "users");
   const userData = {
     email: email,
     dueDate: dueDate,
   };
-
   try {
     console.log(email, password, dueDate);
     // Create user with email and password
@@ -48,14 +48,8 @@ export const register = async (email, password, dueDate) => {
     );
     // Get user from response
     const user = response.user;
-
-    // Add user data to "users" collection
     const docRef = await addDoc(usersCollection, userData);
     console.log("Document added with ID: ", docRef.id);
-
-    // Save due date to a specific document for the user
-    const userDocRef = doc(db, "users", docRef.id);
-    await setDoc(userDocRef, { dueDate: dueDate }, { merge: true });
 
     console.log("User registered successfully", user);
     return user;

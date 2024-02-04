@@ -1,5 +1,5 @@
 import { StyleSheet, TouchableOpacity, View } from "react-native";
-import { MD3Colors, Avatar, Button, Card, Text } from "react-native-paper";
+import {   MD3Colors, Avatar, Button, Card, Text } from "react-native-paper";
 import Calendar from "../components/Calendar";
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -12,14 +12,28 @@ const OnBoarding = () => {
     <View style={styles.container}>
       <View>
         <Text style={styles.headerText}>Welcome! 🥳</Text>
-        <Card theme={{ colors: { primary: "#f0e6f7" } }}>
+        <Card theme={{colors : {primary : "#f0e6f7"}}}>
           <Card.Content>
             <Text variant="bodyMedium" style={styles.contentText}>
               Choose your due date to personalize your experience
             </Text>
+
           </Card.Content>
           <Card.Actions>
             <Calendar />
+            {/* <Button
+              style={{
+                flex: 1,
+                width: 10,
+                alignSelf: "center",
+              }}
+              mode="contained"
+              onPress={() => {
+                navigation.navigate("Register");
+              }}
+            >
+              Ok
+            </Button> */}
           </Card.Actions>
         </Card>
       </View>
@@ -75,6 +89,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "600",
     textAlign: "center",
-    marginVertical: 10,
+    marginVertical: 10, 
   },
 });

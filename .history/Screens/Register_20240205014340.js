@@ -40,6 +40,7 @@ function Register({route}) {
       // remove spaces from email
       const trimmedEmail = email.trim();
       const trimmedPassword = password.trim();
+      console.log("This si in the register screen", dueDate)
       if (!dueDate) {
         alert("Please select your due date");
         return;
@@ -126,12 +127,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: MD3Colors.grey50, // Light Purple
-  },
-  upperText: {
-    fontSize: 20,
-    fontWeight: "600",
-    textAlign: "center",
-    marginVertical: 10,
   },
   image: {
     width: 200,

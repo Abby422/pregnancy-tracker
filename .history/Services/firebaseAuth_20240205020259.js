@@ -5,16 +5,11 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { FIREBASE_DB } from "./firebaseConfig";
-import {
-  addDoc,
-  collection,
-  doc,
-  getDocs,
-  getFirestore,
-  setDoc,
-} from "firebase/firestore";
-import {db} from "./firebaseConfig"
+import { addDoc, collection, doc, getFirestore, setDoc } from "firebase/firestore";
+import firestore from "@react-native-firebase/firestore";
+
 const auth = getAuth(FIREBASE_APP);
+const db = getFirestore();
 
 export const signIn = async (email, password) => {
   try {
@@ -37,31 +32,16 @@ export const signIn = async (email, password) => {
     alert("Login in failed" + error.message);
   }
 };
-const colRef = collection(db, "users");
-
-const fetchDataFromFirestore = async () => {
-  try {
-    const snapshot = await getDocs(colRef);
-    let collection = [];
-
-    snapshot.docs.forEach((doc) => {
-      collection.push({ ...doc.data(), id: doc.id });
-    });
-
-    // Now 'collection' array has the data from Firestore
-    console.log("Fetched data:", collection);
-
-    // You can return the collection or do something else with it
-    return collection;
-  } catch (error) {
-    console.error("Error fetching data from Firestore:", error);
-    throw error;
-  }
-};
-
 export const register = async (email, password, dueDate) => {
-fetchDataFromFirestore()
+const colRef = collection(db, "collection");
 
+getDocs(colRef).then((snapshot) => {
+  let collection = [];
+  snapshot.docs.forEach((doc) => {
+    collection.push({ ...doc.data(), id: doc.id });
+  });
+});
+  console.log(collection);
   // const userData = {
   //   email: email,
   //   dueDate: dueDate,

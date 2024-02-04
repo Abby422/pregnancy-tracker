@@ -13,8 +13,9 @@ import {
   getFirestore,
   setDoc,
 } from "firebase/firestore";
-import {db} from "./firebaseConfig"
+
 const auth = getAuth(FIREBASE_APP);
+const db = getFirestore();
 
 export const signIn = async (email, password) => {
   try {
@@ -37,31 +38,16 @@ export const signIn = async (email, password) => {
     alert("Login in failed" + error.message);
   }
 };
-const colRef = collection(db, "users");
+export const register = async (email, password, dueDate) => {
+  const colRef = collection(db, "users");
 
-const fetchDataFromFirestore = async () => {
-  try {
-    const snapshot = await getDocs(colRef);
+  getDocs(colRef).then((snapshot) => {
     let collection = [];
-
     snapshot.docs.forEach((doc) => {
       collection.push({ ...doc.data(), id: doc.id });
     });
-
-    // Now 'collection' array has the data from Firestore
-    console.log("Fetched data:", collection);
-
-    // You can return the collection or do something else with it
-    return collection;
-  } catch (error) {
-    console.error("Error fetching data from Firestore:", error);
-    throw error;
-  }
-};
-
-export const register = async (email, password, dueDate) => {
-fetchDataFromFirestore()
-
+  });
+  console.log(collection);
   // const userData = {
   //   email: email,
   //   dueDate: dueDate,

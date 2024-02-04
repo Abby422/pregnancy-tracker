@@ -40,6 +40,7 @@ function Register({route}) {
       // remove spaces from email
       const trimmedEmail = email.trim();
       const trimmedPassword = password.trim();
+      console.log("This si in the register screen", dueDate)
       if (!dueDate) {
         alert("Please select your due date");
         return;

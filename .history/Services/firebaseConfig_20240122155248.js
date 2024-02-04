@@ -21,4 +21,4 @@ initializeAuth(app, {
 });
 
 export default FIREBASE_APP = app;
-export const db = getFirestore(app);
+export const FIREBASE_DB = getFirestore(app);

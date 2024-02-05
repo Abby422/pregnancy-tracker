@@ -14,7 +14,7 @@ import { FIREBASE_APP } from "../Services/firebaseConfig";
 import Svg, { Path } from "react-native-svg";
 import { pregnancyData } from "../lib/pregnancy";
 import { Divider } from "react-native-paper";
-import { fetchUserData, getUserData } from "../Services/fireStore";
+import { fetchUserData } from "../Services/fireStore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import InfoCard from "../components/InfoCard";
 import ArticleCard from "../components/ArticleCard";
@@ -30,7 +30,7 @@ const Home = () => {
   const [remainingWeeks, setRemainingWeeks] = useState(null);
   const navigation = useNavigation();
   
-  const handleBabyDetailsPage = (id) => {
+  const handleArticlePress = (id) => {
     navigation.navigate("ArticleDetailScreen", {
       id: id,
     });
@@ -51,21 +51,21 @@ const Home = () => {
       id: id,
     });
   };
-  // useEffect(() => {
-  //   onAuthStateChanged(auth, (user) => {
-  //     setUserId(user.uid);
-  //     if (initializing) setInitializing(false);
-  //   });
-  //   const fetchedUserData = async () => {
-  //     const userData = await fetchUserData(userId);
-  //     console.log(userData)
-  //     if (userData) {
-  //       setDueDate(userData.dueDate);
-  //     }
-  //   };
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      setUserId(user.uid);
+      if (initializing) setInitializing(false);
+    });
+    const fetchedUserData = async () => {
+      const userData = await fetchUserData(userId);
+      console.log(userData)
+      if (userData) {
+        setDueDate(userData.dueDate);
+      }
+    };
 
-  //   fetchedUserData();
-  // }, [userId]);
+    fetchedUserData();
+  }, [userId]);
 
   const babyData = () => {
     pregnancyData.forEach((week) => {
@@ -92,7 +92,7 @@ const Home = () => {
      });
 
      const fetchedUserData = async () => {
-       const userData = await getUserData(userId);
+       const userData = await fetchUserData(userId);
        if (userData) {
          setDueDate(userData.dueDate);
        }
@@ -177,7 +177,7 @@ const Home = () => {
               <ArticleCard
                 key={week.id}
                 Heading={week.Baby.Heading}
-                onPress={() => handleBabyDetailsPage(week.id)}
+                onPress={() => handleArticlePress(week.id)}
               />
             );
           })}

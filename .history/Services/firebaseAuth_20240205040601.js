@@ -53,6 +53,10 @@ export const signIn = async (email, password) => {
   }
 };
 
+import { collection, addDoc, doc, setDoc } from "firebase/firestore";
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import { auth, db } from "./firebaseConfig";
+
 export const register = async (email, password, dueDate) => {
   const usersCollection = collection(db, "users");
   const userData = {

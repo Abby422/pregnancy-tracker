@@ -1,7 +1,5 @@
-import { Dimensions, Image, StyleSheet, Text, View } from "react-native";
-import React from "react";
-import { pregnancyData } from "../lib/pregnancy";
-import { Divider } from "react-native-paper";
+import { StyleSheet, Text, View } from 'react-native'
+import React from 'react'
 
 const ArticleDetailScreen = ({ route }) => {
   const { id } = route.params;
@@ -15,10 +13,6 @@ const ArticleDetailScreen = ({ route }) => {
     <View style={styles.container}>
       <Text style={styles.articleDetailTitle}>{Baby.Heading}</Text>
       <View>
-        <Image
-          source={{ uri: Baby.image }}
-          style={styles.articleDetailImage}
-          alt="baby_image"/>
         <Text>{Baby.Reviewed}</Text>
         <Text>{Baby.Written}</Text>
         <Divider />
@@ -29,20 +23,15 @@ const ArticleDetailScreen = ({ route }) => {
   );
 };
 
-export default ArticleDetailScreen;
+export default ArticleDetailScreen
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#ffffff",
   },
-  articleDetailImage: {
-    width: Dimensions.get("screen").width,
-    height: 200,
-    marginBottom: 10,
-  },
   articleDetailTitle: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "bold",
     marginBottom: 10,
   },

@@ -3,7 +3,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Login from "./Screens/Login";
 import Register from "./Screens/Register";
 import Home from "./Screens/Home";
-import ArticleDetailScreen from "./Screens/ArticleDetailScreen";
+import ArticleDetailScreen from "./Screens/
+ArticleDetailScreen";
 import OnlineCommunity from "./Screens/OnlineCommunity";
 import Posts from "./Screens/Posts";
 import Profile from "./Screens/Profile";

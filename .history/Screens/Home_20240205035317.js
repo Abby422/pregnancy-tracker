@@ -30,7 +30,7 @@ const Home = () => {
   const [remainingWeeks, setRemainingWeeks] = useState(null);
   const navigation = useNavigation();
   
-  const handleBabyDetailsPage = (id) => {
+  const handleArticlePress = (id) => {
     navigation.navigate("ArticleDetailScreen", {
       id: id,
     });
@@ -177,7 +177,7 @@ const Home = () => {
               <ArticleCard
                 key={week.id}
                 Heading={week.Baby.Heading}
-                onPress={() => handleBabyDetailsPage(week.id)}
+                onPress={() => handleArticlePress(week.id)}
               />
             );
           })}

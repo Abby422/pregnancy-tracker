@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Login from "./Screens/Login";
 import Register from "./Screens/Register";
 import Home from "./Screens/Home";
-import ArticleDetailScreen from "./Screens/ArticleDetailScreen";
+import  ArticleDetailScreen  from "./Screens/Home";
 import OnlineCommunity from "./Screens/OnlineCommunity";
 import Posts from "./Screens/Posts";
 import Profile from "./Screens/Profile";
@@ -124,15 +124,15 @@ export default function App() {
             <>
               <Stack.Screen name="Main" component={MainStack} />
               <Stack.Screen
-                name="ArticleDetailScreen"
-                component={ArticleDetailScreen}
-              />
-              <Stack.Screen
                 name="MotherDetailsScreen"
                 component={MotherDetailsScreen}
               />
               <Stack.Screen name="Posts" component={Posts} />
               <Stack.Screen name="MealPlanScreen" component={MealPlanScreen} />
+              <Stack.Screen
+                name="ArticleDetailScreen"
+                component={ArticleDetailScreen}
+              />
               <Stack.Screen name="Exercise" component={Exercise} />
             </>
           ) : (

@@ -2,7 +2,7 @@ export const pregnancyData = [
   {
     id: 2,
     Baby: {
-      image:
+      Image:
         "https://assets.babycenter.com/ims/2018/06/pregnancy-week-2-fertilization_4x3.png?width=1026",
       Heading: "Baby Development at 2 weeks",
       subHeading : "Getting ready to grpw a baby",

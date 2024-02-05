@@ -15,10 +15,6 @@ const ArticleDetailScreen = ({ route }) => {
     <View style={styles.container}>
       <Text style={styles.articleDetailTitle}>{Baby.Heading}</Text>
       <View>
-        <Image
-          source={{ uri: Baby.image }}
-          style={styles.articleDetailImage}
-          alt="baby_image"/>
         <Text>{Baby.Reviewed}</Text>
         <Text>{Baby.Written}</Text>
         <Divider />
@@ -36,13 +32,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#ffffff",
   },
-  articleDetailImage: {
-    width: Dimensions.get("screen").width,
-    height: 200,
-    marginBottom: 10,
-  },
   articleDetailTitle: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "bold",
     marginBottom: 10,
   },

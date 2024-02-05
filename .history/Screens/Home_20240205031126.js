@@ -14,10 +14,9 @@ import { FIREBASE_APP } from "../Services/firebaseConfig";
 import Svg, { Path } from "react-native-svg";
 import { pregnancyData } from "../lib/pregnancy";
 import { Divider } from "react-native-paper";
-import { fetchUserData, getUserData } from "../Services/fireStore";
+import { fetchUserData } from "../Services/fireStore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import InfoCard from "../components/InfoCard";
-import ArticleCard from "../components/ArticleCard";
 
 
 const auth = getAuth(FIREBASE_APP);
@@ -25,12 +24,13 @@ const Home = () => {
   const [initializing, setInitializing] = useState(true);
   const pregnancyDuration = 40;
   const [userId, setUserId] = useState(null);
-  const [userName, setUserName] = useState("");
+  const [article, setArticle] = useState([]);
+  const [currentDate, setCurrentDate] = useState(new Date());
   const [dueDate, setDueDate] = useState(null);
   const [remainingWeeks, setRemainingWeeks] = useState(null);
   const navigation = useNavigation();
-  
-  const handleBabyDetailsPage = (id) => {
+
+  const handleArticlePress = (id) => {
     navigation.navigate("ArticleDetailScreen", {
       id: id,
     });
@@ -51,21 +51,21 @@ const Home = () => {
       id: id,
     });
   };
-  // useEffect(() => {
-  //   onAuthStateChanged(auth, (user) => {
-  //     setUserId(user.uid);
-  //     if (initializing) setInitializing(false);
-  //   });
-  //   const fetchedUserData = async () => {
-  //     const userData = await fetchUserData(userId);
-  //     console.log(userData)
-  //     if (userData) {
-  //       setDueDate(userData.dueDate);
-  //     }
-  //   };
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      console.log("userid", user.uid);
+      setUserId(user.uid);
+      if (initializing) setInitializing(false);
+    });
+    const fetchedUserData = async () => {
+      const userData = await fetchUserData(userId);
+      if (userData) {
+        setDueDate(userData.dueDate);
+      }
+    };
 
-  //   fetchedUserData();
-  // }, [userId]);
+    fetchedUserData();
+  }, [userId]);
 
   const babyData = () => {
     pregnancyData.forEach((week) => {
@@ -83,44 +83,6 @@ const Home = () => {
     });
   };
 
-   useEffect(() => {
-     const authStateChanged = onAuthStateChanged(auth, (user) => {
-       console.log("userid", user?.uid);
-       setUserId(user?.uid);
-       setUserName(user?.email);
-       if (initializing) setInitializing(false);
-     });
-
-     const fetchedUserData = async () => {
-       const userData = await getUserData(userId);
-       if (userData) {
-         setDueDate(userData.dueDate);
-       }
-     };
-
-     fetchedUserData();
-
-     return () => {
-       // Unsubscribe from auth state changes when component unmounts
-       authStateChanged();
-     };
-   }, [userId, initializing]);
-  
-  //  useEffect(() => {
-  //    // Set user's name based on your data structure
-  //    // For example, assuming there is a field 'name' in user data
-  //    // Adjust this based on your actual data structure
-  //    const setUserDisplayName = async () => {
-  //      if (userId) {
-  //        const user = await getUserData(userId); // You may need to implement a function to get user data
-
-  //        console.log('User: ' + user);
-  //        setUserName(user?.emails || ""); // Adjust the field name based on your actual data structure
-  //      }
-  //    };
-
-  //    setUserDisplayName();
-  //  }, [userId]);
   
   StatusBar.setHidden(true);
   return (
@@ -149,7 +111,7 @@ const Home = () => {
             color: "#2e004d",
           }}
         >
-          Welcome {userName ? userName : "User"}
+          Welcome {" John Doe"}
         </Text>
         <Image
           style={styles.image}
@@ -177,7 +139,7 @@ const Home = () => {
               <ArticleCard
                 key={week.id}
                 Heading={week.Baby.Heading}
-                onPress={() => handleBabyDetailsPage(week.id)}
+                onPress={() => handleArticlePress(week.id)}
               />
             );
           })}
@@ -203,6 +165,13 @@ const Home = () => {
 
 
 
+// Component for displaying articles
+const ArticleCard = ({ Heading, onPress }) => (
+  <TouchableOpacity style={styles.card} onPress={onPress}>
+    <Text style={styles.cardTitle}>{Heading}</Text>
+    <Text style={styles.readMore}>Read More</Text>
+  </TouchableOpacity>
+);
 
 
 

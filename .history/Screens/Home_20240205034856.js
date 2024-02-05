@@ -30,7 +30,7 @@ const Home = () => {
   const [remainingWeeks, setRemainingWeeks] = useState(null);
   const navigation = useNavigation();
   
-  const handleBabyDetailsPage = (id) => {
+  const handleArticlePress = (id) => {
     navigation.navigate("ArticleDetailScreen", {
       id: id,
     });
@@ -51,21 +51,21 @@ const Home = () => {
       id: id,
     });
   };
-  // useEffect(() => {
-  //   onAuthStateChanged(auth, (user) => {
-  //     setUserId(user.uid);
-  //     if (initializing) setInitializing(false);
-  //   });
-  //   const fetchedUserData = async () => {
-  //     const userData = await fetchUserData(userId);
-  //     console.log(userData)
-  //     if (userData) {
-  //       setDueDate(userData.dueDate);
-  //     }
-  //   };
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      setUserId(user.uid);
+      if (initializing) setInitializing(false);
+    });
+    const fetchedUserData = async () => {
+      const userData = await fetchUserData(userId);
+      console.log(userData)
+      if (userData) {
+        setDueDate(userData.dueDate);
+      }
+    };
 
-  //   fetchedUserData();
-  // }, [userId]);
+    fetchedUserData();
+  }, [userId]);
 
   const babyData = () => {
     pregnancyData.forEach((week) => {
@@ -177,7 +177,7 @@ const Home = () => {
               <ArticleCard
                 key={week.id}
                 Heading={week.Baby.Heading}
-                onPress={() => handleBabyDetailsPage(week.id)}
+                onPress={() => handleArticlePress(week.id)}
               />
             );
           })}

@@ -3,7 +3,7 @@ import { db } from "./firebaseConfig";
 
 export const getUserData = async (userId) => {
   try {
-    const userDocRef = doc(db, "users", userId);
+    const userDocRef = doc(db, "users");
     const userDocSnapshot = await getDoc(userDocRef);
 
     if (userDocSnapshot.exists()) {

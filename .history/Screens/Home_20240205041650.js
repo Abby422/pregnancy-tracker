@@ -31,7 +31,7 @@ const Home = () => {
   const navigation = useNavigation();
   
   const handleBabyDetailsPage = (id) => {
-    navigation.navigate("ArticleDetailScreen", {
+    navigation.navigate("MotherDetailsScreen", {
       id: id,
     });
   };

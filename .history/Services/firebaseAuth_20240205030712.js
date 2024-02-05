@@ -52,7 +52,6 @@ export const signIn = async (email, password) => {
     alert("Login failed: " + error.message);
   }
 };
-
 export const register = async (email, password, dueDate) => {
   const usersCollection = collection(db, "users");
   const userData = {
@@ -67,21 +66,21 @@ export const register = async (email, password, dueDate) => {
       email,
       password
     );
-
     // Get user from response
     const user = response.user;
 
-    // Set the document ID in the "users" collection as the user's ID
-    const userDocRef = doc(db, "users", user.uid);
+    // Add user data to "users" collection
+    const docRef = await addDoc(usersCollection, userData);
+    console.log("Document added with ID: ", docRef.id);
 
-    // Add user data to "users" collection with the specified user ID
-    await setDoc(userDocRef, userData);
+    // Save due date to a specific document for the user
+    const userDocRef = doc(db, "users", docRef.id);
+    await setDoc(userDocRef, { dueDate: dueDate }, { merge: true });
 
     console.log("User registered successfully", user);
-
     return {
       user,
-      dueDate,
+      dueDate
     };
   } catch (error) {
     console.error("Registration failed", error);

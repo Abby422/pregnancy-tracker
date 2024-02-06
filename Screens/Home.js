@@ -38,7 +38,7 @@ const Home = () => {
 
   // Function to calculate the due date and remaining weeks
   const calculateDueDate = (currentDate, pregnancyDuration) => {
-    const dueDate = new Date(currentDate);
+
     dueDate.setDate(dueDate.getDate() + pregnancyDuration * 7);
     const remainingWeeks = Math.ceil(
       (dueDate - currentDate) / (1000 * 60 * 60 * 24 * 7)
@@ -87,7 +87,7 @@ const Home = () => {
      const authStateChanged = onAuthStateChanged(auth, (user) => {
        console.log("userid", user?.uid);
        setUserId(user?.uid);
-       setUserName(user?.email);
+       setUserName(user?.uName);
        if (initializing) setInitializing(false);
      });
 

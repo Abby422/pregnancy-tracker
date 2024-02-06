@@ -53,11 +53,12 @@ export const signIn = async (email, password) => {
   }
 };
 
-export const register = async (email, password, dueDate) => {
+export const register = async (email, password, dueDate, uName) => {
   const usersCollection = collection(db, "users");
   const userData = {
     email: email,
     dueDate: dueDate,
+    uName: uName,
   };
 
   try {

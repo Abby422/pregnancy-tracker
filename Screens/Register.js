@@ -13,6 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import { register } from "../Services/firebaseAuth";
 
 function Register({route}) {
+  const [uName, setuName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -44,7 +45,7 @@ function Register({route}) {
         alert("Please select your due date");
         return;
       }
-      const user = await register(trimmedEmail, trimmedPassword, dueDate);
+      const user = await register(trimmedEmail, trimmedPassword, dueDate, uName);
       if (user) {
         navigation.navigate("Main");
       }
@@ -61,8 +62,6 @@ function Register({route}) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.upperText}>Your due date is</Text>
-    <Text style={{ fontSize: 30, fontWeight: "bold" }}> {dueDate}</Text>
       <KeyboardAvoidingView behavior="padding" style={styles.innerContainer}>
         <Image
           source={require("../assets/Images/cute-baby.png")}
@@ -71,6 +70,14 @@ function Register({route}) {
         <Text style={{ fontSize: 30, fontWeight: "bold" }}>
           Welcome to PTracker
         </Text>
+        <TextInput
+          placeholder="name"
+          name="name"
+          style={styles.input}
+          value={uName}
+          onChangeText={(text) => setuName(text)}
+          leftIcon={{ type: "material", name: "person" }}
+        />
         <TextInput
           placeholder="Email"
           autoFocus

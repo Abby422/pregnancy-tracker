@@ -95,9 +95,6 @@ function Login() {
             >
               LOGIN
             </Button>
-            <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-              <Text style={styles.register}>New User? Register</Text>
-            </TouchableOpacity>
           </>
         )}
       </KeyboardAvoidingView>

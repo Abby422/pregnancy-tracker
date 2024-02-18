@@ -4,11 +4,11 @@ import {
   getAuth,
   updateProfile,
 } from "firebase/auth";
-import { FIREBASE_DB } from "./firebaseConfig";
 import {
   addDoc,
   collection,
   doc,
+  getDoc,
   getDocs,
   getFirestore,
   setDoc,
@@ -18,7 +18,6 @@ const auth = getAuth(FIREBASE_APP);
 
 export const signIn = async (email, password) => {
   try {
-    console.log(email, password);
     const userCredential = await signInWithEmailAndPassword(
       auth,
       email,

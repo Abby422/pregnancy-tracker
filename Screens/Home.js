@@ -1,49 +1,71 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useState, useEffect, useContext } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  Image,
-  Dimensions,
-  StatusBar,
-} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, Dimensions, StatusBar,} from "react-native";
 import { FIREBASE_APP } from "../Services/firebaseConfig";
 import Svg, { Path } from "react-native-svg";
 import { pregnancyData } from "../lib/pregnancy";
 import { Divider } from "react-native-paper";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { fetchUser } from "../redux/actions";
 import { fetchUserData, getUserData } from "../Services/fireStore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import InfoCard from "../components/InfoCard";
 import ArticleCard from "../components/ArticleCard";
 
-
 const auth = getAuth(FIREBASE_APP);
+
+const mapStateToProps = (store) => ({
+  currentUser: store.userState.currentUser
+});
+
+const mapDispatch = (dispatch) => bindActionCreators({fetchUser}, dispatch)
 const Home = () => {
   const [initializing, setInitializing] = useState(true);
-  const pregnancyDuration = 40;
   const [userId, setUserId] = useState(null);
   const [userName, setUserName] = useState("");
   const [dueDate, setDueDate] = useState(null);
-  const [remainingWeeks, setRemainingWeeks] = useState(null);
   const navigation = useNavigation();
-  
+  const [gestationAge, setGestationAge] = useState(0);
+  const [remainingWeeks, setRemainingWeeks] = useState(null);
+
   const handleBabyDetailsPage = (id) => {
     navigation.navigate("ArticleDetailScreen", {
       id: id,
     });
   };
 
-  // Function to calculate the due date and remaining weeks
-  const calculateDueDate = (currentDate, pregnancyDuration) => {
+  const calculateWeeksPregnant = () => {
+    // Parse the dueDate string into a Date object
+    const dueDateObject = new Date(dueDate);
+    if (isNaN(dueDateObject.getTime())) {
+      console.error("Invalid due date format.");
+      return;
+    }
 
-    dueDate.setDate(dueDate.getDate() + pregnancyDuration * 7);
-    const remainingWeeks = Math.ceil(
-      (dueDate - currentDate) / (1000 * 60 * 60 * 24 * 7)
-    );
-    return { dueDate, remainingWeeks };
+    const currentDate = new Date(); // Current date
+    const gestationalAge = 40; // Gestational age in weeks
+    const millisecondsPerWeek = 7 * 24 * 60 * 60 * 1000; // milliseconds in a week
+    const currentTimestamp = currentDate.getTime();
+    const dueTimestamp = dueDateObject.getTime();
+
+    const gestationalWeeks = gestationalAge * millisecondsPerWeek;
+    let pregnancyDuration =
+      gestationalWeeks - (dueTimestamp - currentTimestamp);
+
+    // If pregnancy duration is greater than the maximum gestational weeks, set it to maximum
+
+    const weeksPregnant = Math.ceil(pregnancyDuration / millisecondsPerWeek);
+
+    console.log("Pregnancy Duration:", pregnancyDuration);
+    console.log("Gestational Weeks:", gestationalWeeks);
+    console.log("Weeks Pregnant:", weeksPregnant);
+
+    setGestationAge(weeksPregnant);
+  };
+
+  const calculateRemainingWeeks = () => {
+    setRemainingWeeks(40 - gestationAge);
   };
 
   const handleMotherDetailsPage = (id) => {
@@ -51,77 +73,42 @@ const Home = () => {
       id: id,
     });
   };
-  // useEffect(() => {
-  //   onAuthStateChanged(auth, (user) => {
-  //     setUserId(user.uid);
-  //     if (initializing) setInitializing(false);
-  //   });
-  //   const fetchedUserData = async () => {
-  //     const userData = await fetchUserData(userId);
-  //     console.log(userData)
-  //     if (userData) {
-  //       setDueDate(userData.dueDate);
-  //     }
-  //   };
 
-  //   fetchedUserData();
-  // }, [userId]);
-
-  const babyData = () => {
-    pregnancyData.forEach((week) => {
-      // Extract week number from the object keys
-      const weekNumber = week.id;
-
-      // Extract Baby and Mother information for the current week
-      const babyInfo = week.Baby;
-
-      // Log or process babyInfo and motherInfo as needed
-      console.log(`Week ${weekNumber}`);
-      console.log("Baby Info:", babyInfo);
-      // console.log("Mother Info:", motherInfo);
-      setArticle(babyInfo || []);
+  useEffect(() => {
+    const authStateChanged = onAuthStateChanged(auth, (user) => {
+      setUserId(user?.uid);
+      console.log(user.uName)
+      setUserName(user?.uName);
+      if (initializing) setInitializing(false);
     });
-  };
 
-   useEffect(() => {
-     const authStateChanged = onAuthStateChanged(auth, (user) => {
-       console.log("userid", user?.uid);
-       setUserId(user?.uid);
-       setUserName(user?.uName);
-       if (initializing) setInitializing(false);
-     });
+    // const fetchedUserData = async () => {
+    //   const userData = await getUserData(userId);
+    //   if (userData) {
+    //     setDueDate(userData.dueDate);
+    //   }
+    // };
 
-     const fetchedUserData = async () => {
-       const userData = await getUserData(userId);
-       if (userData) {
-         setDueDate(userData.dueDate);
-       }
-     };
+    // fetchedUserData();
+    fetchUserData();
+    console.log("called fetchUserData")
+    if (dueDate) {
+      calculateWeeksPregnant();
+      calculateRemainingWeeks();
+    }
 
-     fetchedUserData();
+    return () => {
+      // Unsubscribe from auth state changes when component unmounts
+      authStateChanged();
+    };
+  }, [userId, initializing]);
 
-     return () => {
-       // Unsubscribe from auth state changes when component unmounts
-       authStateChanged();
-     };
-   }, [userId, initializing]);
-  
-  //  useEffect(() => {
-  //    // Set user's name based on your data structure
-  //    // For example, assuming there is a field 'name' in user data
-  //    // Adjust this based on your actual data structure
-  //    const setUserDisplayName = async () => {
-  //      if (userId) {
-  //        const user = await getUserData(userId); // You may need to implement a function to get user data
-
-  //        console.log('User: ' + user);
-  //        setUserName(user?.emails || ""); // Adjust the field name based on your actual data structure
-  //      }
-  //    };
-
-  //    setUserDisplayName();
-  //  }, [userId]);
-  
+   function fetchUserData() {
+    console.log("making call to fetchUser")
+    fetchUser();
+    console.log("empty",  fetchUser())
+    // console.log("User data:", user);
+  }
   StatusBar.setHidden(true);
   return (
     <>
@@ -155,17 +142,20 @@ const Home = () => {
           style={styles.image}
           source={require("../assets/Images/cute-baby.png")}
         />
-        <InfoCard style={styles.infoCard} label="Due Date" value={dueDate} />
-        <View style={styles.infoContainer}>
-          <InfoCard
-            label="Weeks Pregnant"
-            value={`${pregnancyDuration - remainingWeeks}`}
-          />
+        <View style={{margin: 10}}>
+          <InfoCard style={styles.infoCard} label="Due Date" value={dueDate} />
+          <View style={styles.infoContainer}>
+            <InfoCard
+              label="Weeks Pregnant"
+              value={gestationAge !== null ? gestationAge.toString() : ""}
+              style={{width: Dimensions.get("screen").width * 0.4}}
+            />
 
-          <InfoCard
-            label="Remaining Weeks"
-            value={remainingWeeks !== null ? remainingWeeks.toString() : ""}
-          />
+            <InfoCard
+              label="Remaining Weeks"
+              value={remainingWeeks !== null ? remainingWeeks.toString() : ""}
+            />
+          </View>
         </View>
 
         <View style={styles.articlesContainer}>
@@ -201,11 +191,6 @@ const Home = () => {
   );
 };
 
-
-
-
-
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -232,6 +217,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 20,
+
   },
   infoCard: {
     backgroundColor: "#fff000",
@@ -282,4 +268,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Home;
+export default connect(mapStateToProps, mapDispatch) (Home);

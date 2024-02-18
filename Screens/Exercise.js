@@ -12,24 +12,24 @@ const Exercise = () => {
   const generateExercisePlan = () => {
     // Simulate fetching an exercise plan based on the trimester
     const generatedExercisePlan = {
-        day1: {
-            Morning: "Walk for 30 minutes",
-            Afternoon: "Do 10 squats",
-            Evening: "Do 10 pushups",
-        },
-        day2: {
-            Morning: "Walk for 30 minutes",
-            Afternoon: "Do 10 squats",
-            Evening: "Do 10 pushups",
-        },
-        day3: {
-            Morning: "Walk for 30 minutes",
-            Afternoon: "Do 10 squats",
-            Evening: "Do 10 pushups",
-        },
+      day1: {
+        Morning: "Walk for 30 minutes",
+        Afternoon: "Do 10 squats",
+        Evening: "Do 10 pushups",
+      },
+      day2: {
+        Morning: "Walk for 30 minutes",
+        Afternoon: "Do 10 squats",
+        Evening: "Do 10 pushups",
+      },
+      day3: {
+        Morning: "Walk for 30 minutes",
+        Afternoon: "Do 10 squats",
+        Evening: "Do 10 pushups",
+      },
     };
-        setExercisePlan(generatedExercisePlan);
-    };
+    setExercisePlan(generatedExercisePlan);
+  };
 
   const renderExercisePlanCard = (day, exerciseType, exercise) => (
     <Card key={`${day}-${exerciseType}`} style={styles.card}>
@@ -51,9 +51,9 @@ const Exercise = () => {
   };
 
   const trimesterOptions = [
-    'First Trimester',
-    'Second Trimester',
-    'Third Trimester',
+    "First Trimester",
+    "Second Trimester",
+    "Third Trimester",
   ];
 
   return (
@@ -119,7 +119,11 @@ const Exercise = () => {
           {Object.keys(exercisePlan).map((day) => (
             <View key={day}>
               {Object.keys(exercisePlan[day]).map((exerciseType) =>
-                renderExercisePlanCard(day, exerciseType, exercisePlan[day][exerciseType])
+                renderExercisePlanCard(
+                  day,
+                  exerciseType,
+                  exercisePlan[day][exerciseType]
+                )
               )}
             </View>
           ))}

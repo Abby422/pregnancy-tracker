@@ -112,9 +112,6 @@ function Register({route}) {
             >
               Register
             </Button>
-            <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-              <Text style={styles.register}>Already a user? Login</Text>
-            </TouchableOpacity>
           </>
         )}
       </KeyboardAvoidingView>

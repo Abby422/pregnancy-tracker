@@ -1,12 +1,8 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native";
+import { View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import { Card, Button, IconButton, Text, Menu } from "react-native-paper";
+import { CohereClient } from "cohere-ai";
 
 const MealPlanScreen = () => {
   const [mealPlan, setMealPlan] = useState(null);
@@ -14,22 +10,27 @@ const MealPlanScreen = () => {
   const [visible, setVisible] = useState(false);
   const navigation = useNavigation();
 
+  const cohere = new CohereClient({
+    token: "xNGsvKUT6rean2FliNUswGxLWLAxI2QfKbsnJCW3", // This is your trial API key
+  });
+
   const generateMealPlan = () => {
     // Simulate fetching a meal plan based on dietary restrictions
-    const generatedMealPlan = {
-      day1: {
-        breakfast: "Oatmeal with fruits",
-        lunch: "Grilled chicken salad",
-        dinner: "Baked salmon with veggies",
-      },
-      day2: {
-        breakfast: "Greek yogurt with granola",
-        lunch: "Quinoa and black bean bowl",
-        dinner: "Vegetarian stir-fry",
-      },
-      // Add more days and meals as needed
+    const generatedMealPlan = async () => {
+      const response = await cohere.generate({
+        model: "command",
+        prompt:
+          "The following is an AI meal planner agent for pregnant women. The AI is responsible for recommending a meal plan based on the user's specified mealtime, dietary restrictions, and preferred cuisine/country. It should refrain from asking users for personal information. The AI uses data from the Nutritionix database for the food and  nutrition values.\n\nCustomer: \"I'm pregnant and looking for a Kenyan-inspired meal recommendation for Lunch, considering my dietary restrictions which are lactose intolerant and require iron rich foods\"\nAgent: Please provide meal options with their corresponding nutritional value per serving. With the output in a json format with meal title, ingredients, preparation and nutritional value of the meals\n",
+        maxTokens: 300,
+        temperature: 1,
+        k: 0,
+        stopSequences: [],
+        returnLikelihoods: "NONE",
+      });
+      console.log(`Prediction: ${response.generations[0].text}`);
     };
-    setMealPlan(generatedMealPlan);
+    console.log(generatedMealPlan())
+    // setMealPlan(generatedMealPlan());
   };
 
   const renderMealPlanCard = (day, mealType, meal) => (
@@ -69,36 +70,44 @@ const MealPlanScreen = () => {
       </TouchableOpacity>
 
       <View style={styles.content}>
-      <View style={{flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
-      <Text variant='labelLarge'>Dietary restrictions:</Text>
-        <Menu
-          visible={visible}
+        <View
           style={{
-            flex: 1,
-            justifyContent: "flex-end",
-            alignItems: "center",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            width: "100%",
           }}
-          onDismiss={closeMenu}
-          anchor={
-            <Button
-              onPress={openMenu}
-              style={{ minWidth: "50%", backgroundColor: "purple"}}
-            >
-              <Text style={{color: '#fff'}}>{dietaryRestrictions || "Select Dietary Restrictions"}</Text>
-            </Button>
-          }
         >
-          {dietaryOptions.map((option) => (
-            <Menu.Item
-              key={option}
-              onPress={() => {
-                selectDietaryOption(option);
-              }}
-              title={option}
-            />
-          ))}
-        </Menu>
-          </View>
+          <Text variant="labelLarge">Dietary restrictions:</Text>
+          <Menu
+            visible={visible}
+            style={{
+              flex: 1,
+              justifyContent: "flex-end",
+              alignItems: "center",
+            }}
+            onDismiss={closeMenu}
+            anchor={
+              <Button
+                onPress={openMenu}
+                style={{ minWidth: "50%", backgroundColor: "purple" }}
+              >
+                <Text style={{ color: "#fff" }}>
+                  {dietaryRestrictions || "Select Dietary Restrictions"}
+                </Text>
+              </Button>
+            }
+          >
+            {dietaryOptions.map((option) => (
+              <Menu.Item
+                key={option}
+                onPress={() => {
+                  selectDietaryOption(option);
+                }}
+                title={option}
+              />
+            ))}
+          </Menu>
+        </View>
         <Button
           mode="contained"
           style={styles.generateButton}

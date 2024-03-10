@@ -1,22 +1,56 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useState, useEffect, useRef } from "react";
-import { View, ScrollView, StyleSheet, TouchableOpacity, Text, KeyboardAvoidingView, Dimensions } from "react-native";
-import { Card, Title, Paragraph, Button, Portal, Dialog, TextInput, IconButton, Icon} from "react-native-paper";
+import {
+  View,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  KeyboardAvoidingView,
+  Dimensions,
+} from "react-native";
+import {
+  Card,
+  Title,
+  Paragraph,
+  Button,
+  Portal,
+  Dialog,
+  TextInput,
+  IconButton,
+  Icon,
+} from "react-native-paper";
 import CamApp from "../components/Camera";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../Services/firebaseConfig";
 import { getPostsData } from "../Services/fireStore";
+import LottieView from "lottie-react-native";
+
+  const Loader = () => {
+    return (
+      <View style={styles.loader}>
+        <LottieView
+          source={require("../assets/animation.json")}
+          autoPlay
+          loop
+          style={styles.loader}
+        />
+      </View>
+    );
+  };
+
 
 const Posts = ({ route }) => {
   const navigation = useNavigation();
   const { topic } = route.params;
-  console.log(topic)
+  console.log(topic, "topic");
   const id = topic.id;
   const [comments, setComments] = useState([]);
   const [posts, setPosts] = useState([]);
 
   const getPosts = async () => {
     const postsData = await getPostsData(id);
+    console.log(postsData, "postsData");
     setPosts(postsData);
   };
 
@@ -36,12 +70,11 @@ const Posts = ({ route }) => {
     }
   };
 
-
   const [visible, setVisible] = useState(false);
   const [selectedPost, setSelectedPost] = useState("");
   const [comment, setComment] = useState("");
 
-  const textInputRef = useRef(null)
+  const textInputRef = useRef(null);
   const [filteredPosts, setFilteredPosts] = useState([]);
 
   const handleAddPost = () => {
@@ -57,10 +90,10 @@ const Posts = ({ route }) => {
     setVisible(true);
   };
 
-  const CustomTextInput = (props) => {
+  const CustomTextInput = React.forwardRef((props, ref) => {
     return (
       <View style={[styles.containerText, props.style]}>
-        <TextInput {...props} style={styles.input}/>
+        <TextInput {...props} style={styles.input} ref={ref} />
         <View style={styles.iconContainer}>
           <IconButton
             icon="camera"
@@ -75,18 +108,23 @@ const Posts = ({ route }) => {
         </View>
       </View>
     );
-  };
+  });
+
   const hideDialog = () => setVisible(false);
 
   const [showCamApp, setShowCamApp] = useState(false);
 
-          const handleFABPress = () => {
-            setShowCamApp(true);
-          };
+  const handleFABPress = () => {
+    setShowCamApp(true);
+  };
+
   const handleComment = () => {
     // logic to handle commenting on posts
     console.log(`Comment on post ${selectedPost.id}: ${comment}`);
-    setComments([...comments, { id: comments.length + 1, postId: selectedPost.id, content: comment }]);
+    setComments([
+      ...comments,
+      { id: comments.length + 1, postId: selectedPost.id, content: comment },
+    ]);
     // update state or send the comment to backend here
     hideDialog();
   };
@@ -105,7 +143,7 @@ const Posts = ({ route }) => {
     if (comments.length === 0) {
       return <Text>No comments available for this post.</Text>;
     }
-    if (comments.postId == postId){
+    if (comments.postId == postId) {
       return comments.map((comment) => (
         <Card key={comment.id} style={styles.card}>
           <Card.Content>
@@ -113,85 +151,91 @@ const Posts = ({ route }) => {
           </Card.Content>
         </Card>
       ));
-
     }
-  }
+  };
   const renderPosts = () => {
-    if (posts.length === 0) {
-      return <Text>No posts available for this topic.</Text>;
-    }
-
-    return posts.map((post) => (
-      <Card key={post.id} style={styles.card}>
-        <Card.Content>
-          <Title>user</Title>
-          <Paragraph>{post.postContent}</Paragraph>
-        </Card.Content>
-        <Card.Actions>
-          <TouchableOpacity style={styles.button} onPress={() => showComments(post.id)}>
-          <IconButton icon="comment" size={20} color="#007AFF" />
-          <Text style={styles.buttonText}>View Comments</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => handleAddComment(post)}>
-          <IconButton icon="pencil" size={20} color="#007AFF" />
-          <Text style={styles.buttonText}>Add Comment</Text>
-        </TouchableOpacity>
-      </Card.Actions>
-      {post.showCommentInput && (
-        <CustomTextInput
-          placeholder="Add a comment"
-          onSubmitEditing={(text) => handleComment(post, text)}
-        />
-      )}
-      </Card>
-    ));
+    return posts.map((post) =>
+      id === post.topicID ? (
+        <Card key={post.id} style={styles.card}>
+          <Card.Content>
+            <Title>user</Title>
+            <Paragraph>{post.postContent}</Paragraph>
+          </Card.Content>
+          <Card.Actions>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => showComments(post.id)}
+            >
+              <IconButton icon="comment" size={20} color="#007AFF" />
+              <Text style={styles.buttonText}>View Comments</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => handleAddComment(post)}
+            >
+              <IconButton icon="pencil" size={20} color="#007AFF" />
+              <Text style={styles.buttonText}>Add Comment</Text>
+            </TouchableOpacity>
+          </Card.Actions>
+          {post.showCommentInput && (
+            <CustomTextInput
+              placeholder="Add a comment"
+              onSubmitEditing={(text) => handleComment(post, text)}
+            />
+          )}
+        </Card>
+      ) : null
+    );
   };
 
   return (
-    <KeyboardAvoidingView style={{flex: 1}} behavior="padding">
-    <View style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.goBack()}>
-        <IconButton icon="arrow-left" size={30} iconColor="#000" />
-      </TouchableOpacity>
-      <View style={styles.topicContainer}>
-        <Text style={styles.topicTitle}>{topic.topic}</Text>
-        <Text style={styles.topicDescription}>{topic.description}</Text>
-      </View>
-      <ScrollView>
-        <View style={styles.content}>{renderPosts()}</View>
-      </ScrollView>
-
-      <Portal>
-        <Dialog visible={visible} onDismiss={hideDialog}>
-          <Dialog.Title>{selectedPost.title}</Dialog.Title>
-          <Dialog.Content>
-            <Paragraph>{selectedPost.content}</Paragraph>
-            <TextInput
-              label="Your Comment"
-              value={comment}
-              onChangeText={(text) => setComment(text)}
-              style={styles.commentInput}
-            />
-          </Dialog.Content>
-          <Dialog.Actions>
-            <Button onPress={handleComment}>Comment</Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
-      <KeyboardAvoidingView>
-        <View>
-          <CustomTextInput
-            ref={textInputRef}
-            value={selectedPost}
-            placeholder="Add Post"
-            onChangeText={(text) => setSelectedPost(text)}
-            mode="outlined"
-            activeOutlineColor="#ccc"
-            style={{ position: "absolute", bottom: 0 }}
-          />
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
+      <View style={styles.container}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <IconButton icon="arrow-left" size={30} iconColor="#000" />
+        </TouchableOpacity>
+        <View style={styles.topicContainer}>
+          <Text style={styles.topicTitle}>{topic.topic}</Text>
+          <Text style={styles.topicDescription}>{topic.description}</Text>
         </View>
-      </KeyboardAvoidingView>
-    </View>
+        <ScrollView>
+        {posts ? <View style={styles.content}>{renderPosts()}</View>
+        :
+        <><Loader /></>}
+          
+        </ScrollView>
+
+        <Portal>
+          <Dialog visible={visible} onDismiss={hideDialog}>
+            <Dialog.Title>{selectedPost.title}</Dialog.Title>
+            <Dialog.Content>
+              <Paragraph>{selectedPost.content}</Paragraph>
+              <TextInput
+                label="Your Comment"
+                value={comment}
+                onChangeText={(text) => setComment(text)}
+                style={styles.commentInput}
+              />
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button onPress={handleComment}>Comment</Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
+        <KeyboardAvoidingView>
+          <View>
+            <CustomTextInput
+              ref={textInputRef}
+              value={selectedPost}
+              placeholder="Add Post"
+              onChangeText={(text) => setSelectedPost(text)}
+              mode="outlined"
+              activeOutlineColor="#ccc"
+              style={{ position: "absolute", bottom: 0 }}
+            />
+          </View>
+        </KeyboardAvoidingView>
+      </View>
     </KeyboardAvoidingView>
   );
 };
@@ -231,6 +275,13 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     flexDirection: "row",
+  },
+  loader: {
+    flex: 1,
+    justifyContent: "center",
+    flexGrow : 1,
+    width: 400,
+    alignItems: "center",
   },
   icon: {
     marginHorizontal: 5,

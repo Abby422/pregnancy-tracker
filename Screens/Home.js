@@ -1,33 +1,47 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useState, useEffect, useContext } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, Dimensions, StatusBar,} from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  Dimensions,
+  StatusBar,
+} from "react-native";
 import { FIREBASE_APP } from "../Services/firebaseConfig";
 import Svg from "react-native-svg";
-import { pregnancyData } from "../lib/pregnancy";
 import { Divider } from "react-native-paper";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { fetchUser } from "../redux/actions";
-import { fetchUserData, getUserData } from "../Services/fireStore";
+import {
+  fetchUserData,
+  getPregnancyInfo,
+  getUserData,
+} from "../Services/fireStore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import InfoCard from "../components/InfoCard";
 import ArticleCard from "../components/ArticleCard";
+import { set } from "cohere-ai/core/schemas";
 
 const auth = getAuth(FIREBASE_APP);
 
 const mapStateToProps = (store) => ({
-  currentUser: store.userState.currentUser
+  currentUser: store.userState.currentUser,
 });
 
-const mapDispatch = (dispatch) => bindActionCreators({fetchUser}, dispatch)
+const mapDispatch = (dispatch) => bindActionCreators({ fetchUser }, dispatch);
 const Home = () => {
-  const [initializing, setInitializing] = useState(true);
   const [userId, setUserId] = useState(null);
   const [userName, setUserName] = useState("");
   const [dueDate, setDueDate] = useState(null);
   const navigation = useNavigation();
   const [gestationAge, setGestationAge] = useState(0);
-  const [remainingWeeks, setRemainingWeeks] = useState(null);
+  const [remainingWeeks, setRemainingWeeks] = useState(0);
+  const [pregnancyInformation, setPregnancyInformation] = useState({});
+  const [weeksPregnant, setWeeksPregnant] = useState(0);
 
   const handleBabyDetailsPage = (id) => {
     navigation.navigate("ArticleDetailScreen", {
@@ -37,6 +51,7 @@ const Home = () => {
 
   const calculateWeeksPregnant = () => {
     // Parse the dueDate string into a Date object
+    console.log("object");
     const dueDateObject = new Date(dueDate);
     if (isNaN(dueDateObject.getTime())) {
       console.error("Invalid due date format.");
@@ -55,7 +70,8 @@ const Home = () => {
 
     // If pregnancy duration is greater than the maximum gestational weeks, set it to maximum
 
-    const weeksPregnant = Math.ceil(pregnancyDuration / millisecondsPerWeek);
+    const answer = Math.ceil(pregnancyDuration / millisecondsPerWeek);
+    setWeeksPregnant(answer);
 
     console.log("Pregnancy Duration:", pregnancyDuration);
     console.log("Gestational Weeks:", gestationalWeeks);
@@ -64,8 +80,9 @@ const Home = () => {
     setGestationAge(weeksPregnant);
   };
 
-  const calculateRemainingWeeks = () => {
-    setRemainingWeeks(40 - gestationAge);
+  const calculateRemainingWeeks = (weeks) => {
+    const remainingWeek = 40 - weeks;
+    setRemainingWeeks(remainingWeek);
   };
 
   const handleMotherDetailsPage = (id) => {
@@ -75,32 +92,56 @@ const Home = () => {
   };
 
   useEffect(() => {
-    const authStateChanged = onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, (user) => {
       setUserId(user?.uid);
-      console.log(user.uName)
-      setUserName(user?.uName);
-      if (initializing) setInitializing(false);
     });
+    
+  }, []);
 
-    fetchUserData();
-    console.log("called fetchUserData")
+  useEffect(() => {
+    if (userId) {
+      fetchUserData();
+      getPregnancyData(gestationAge.toString());
+    }
+    console.log("called fetchUserData");
+
     if (dueDate) {
       calculateWeeksPregnant();
-      calculateRemainingWeeks();
+      calculateRemainingWeeks(weeksPregnant);
     }
+    console.log("calculated remaining weeks");
+  }, [userId, dueDate, gestationAge]);
 
-    return () => {
-      // Unsubscribe from auth state changes when component unmounts
-      authStateChanged();
-    };
-  }, [userId, initializing]);
+  const fetchUserData = async () => {
+    try {
+      const userData = await getUserData(userId);
+      if (userData) {
+        console.log(userData);
+        setUserName(userData.uName);
+        setDueDate(userData.dueDate);
+      } else {
+        console.log("User data not found");
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
 
-   function fetchUserData() {
-    console.log("making call to fetchUser")
-    fetchUser();
-    console.log("empty",  fetchUser())
-    // console.log("User data:", user);
-  }
+  const getPregnancyData = async (week) => {
+    try {
+      const pregnancyData = await getPregnancyInfo(week);
+      console.log(pregnancyData, "pregnancyData");
+      if (pregnancyData) {
+        console.log(pregnancyData);
+        setPregnancyInformation(pregnancyData);
+      } else {
+        console.log("Pregnancy data not found");
+      }
+    } catch (error) {
+      console.error("Error fetching pregnancy data:", error);
+    }
+  };
+
   StatusBar.setHidden(true);
   return (
     <>
@@ -112,9 +153,13 @@ const Home = () => {
             viewBox="0 0 1440 320"
             style={styles.topWavy}
           >
-            <Image 
-            style={{width: Dimensions.get("screen").width, height: 200, position: "absolute", top: 0, left: 0, right: 0, bottom: 0, zIndex: -1}}
-             source= {require("../assets/wavvvy.jpg")}
+            <Image
+              style={{
+                width: Dimensions.get("screen").width,
+                position: "absolute",
+                zIndex: -1,
+              }}
+              source={require("../assets/wavvvy.jpg")}
             />
           </Svg>
         </View>
@@ -122,7 +167,7 @@ const Home = () => {
         <Text
           style={{
             fontWeight: "bold",
-            fontSize: 24,
+            fontSize: 36,
             marginLeft: 20,
             color: "#2e004d",
           }}
@@ -133,13 +178,13 @@ const Home = () => {
           style={styles.image}
           source={require("../assets/Images/cute-baby.png")}
         />
-        <View style={{margin: 10}}>
+        <View style={{ margin: 10 }}>
           <InfoCard style={styles.infoCard} label="Due Date" value={dueDate} />
           <View style={styles.infoContainer}>
             <InfoCard
               label="Weeks Pregnant"
               value={gestationAge !== null ? gestationAge.toString() : "6"}
-              style={{width: Dimensions.get("screen").width * 0.4}}
+              style={{ width: Dimensions.get("screen").width * 0.4 }}
             />
 
             <InfoCard
@@ -153,29 +198,16 @@ const Home = () => {
           <Text style={{ margin: 20, fontWeight: "bold", fontSize: 24 }}>
             Info about your baby
           </Text>
-          {pregnancyData.map((week) => {
-            return (
-              <ArticleCard
-                key={week.id}
-                Heading={week.Baby.Heading}
-                onPress={() => handleBabyDetailsPage(week.id)}
-              />
-            );
-          })}
+
+          <ArticleCard
+            Heading={"Baby Development at " + gestationAge + " weeks"}
+            onPress={() => handleBabyDetailsPage(week.id)}
+          />
         </View>
         <View style={styles.articlesContainer}>
           <Text style={{ margin: 20, fontWeight: "bold", fontSize: 24 }}>
             Info about your body
           </Text>
-          {pregnancyData.map((week) => {
-            return (
-              <ArticleCard
-                key={week.id}
-                Heading={week.mother.heading}
-                onPress={() => handleMotherDetailsPage(week.id)}
-              />
-            );
-          })}
         </View>
       </ScrollView>
     </>
@@ -208,7 +240,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 20,
-
   },
   infoCard: {
     backgroundColor: "#fff000",
@@ -259,4 +290,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(mapStateToProps, mapDispatch) (Home);
+export default connect(mapStateToProps, mapDispatch)(Home);

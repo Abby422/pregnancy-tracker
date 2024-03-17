@@ -46,3 +46,23 @@ export const getPostsData = async (topicId) => {
     throw error;
   }
 };
+
+export const getPregnancyInfo = async (weekNumber) => {
+  try {
+    const pregnancyInfoDocRef = doc(db, "pregnancy_info", weekNumber);
+    const pregnancyInfoDocSnapshot = await getDoc(pregnancyInfoDocRef);
+    if (pregnancyInfoDocSnapshot.exists()) {
+      const pregnancyInfo = { id: pregnancyInfoDocSnapshot.id, ...pregnancyInfoDocSnapshot.data() };
+      
+      console.log("Pregnancy info:", pregnancyInfo.data);
+      return JSON.parse(pregnancyInfo.data);
+    } else {
+      console.log("Pregnancy info document does not exist!");
+      return null;
+    }
+    
+  } catch (error) {
+    console.error("Error fetching pregnancy info:", error);
+    throw error;
+  }
+};

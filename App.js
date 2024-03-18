@@ -20,7 +20,7 @@ import { createContext, useEffect, useState } from "react";
 import { ActivityIndicator } from "react-native";
 import { onAuthStateChanged } from "firebase/auth";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { MD3Colors, PaperProvider } from "react-native-paper";
+import {  PaperProvider } from "react-native-paper";
 import { Provider } from "react-redux";
 import { createStore, applyMiddleware } from "redux";
 import rootReducer from "./redux/reducers";

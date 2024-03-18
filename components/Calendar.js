@@ -64,7 +64,8 @@ const Calendar = () => {
           fontSize: 20,
           fontWeight: "600",
           textAlign: "center",
-          margin: 10,
+          marginTop: 10,
+          paddingTop: 10,
         }}
       >
         {date.toLocaleDateString("en-US", {

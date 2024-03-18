@@ -71,7 +71,7 @@ function Register({route}) {
           Welcome to PTracker
         </Text>
         <TextInput
-          placeholder="name"
+          placeholder="Name"
           name="name"
           style={styles.input}
           value={uName}

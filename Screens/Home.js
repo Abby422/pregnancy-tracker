@@ -24,7 +24,6 @@ import {
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import InfoCard from "../components/InfoCard";
 import ArticleCard from "../components/ArticleCard";
-import { set } from "cohere-ai/core/schemas";
 
 const auth = getAuth(FIREBASE_APP);
 
@@ -35,7 +34,7 @@ const mapStateToProps = (store) => ({
 const mapDispatch = (dispatch) => bindActionCreators({ fetchUser }, dispatch);
 const Home = () => {
   const [userId, setUserId] = useState(null);
-  const [userName, setUserName] = useState("");
+  const [userName, setUserName] = useState(null);
   const [dueDate, setDueDate] = useState(null);
   const navigation = useNavigation();
   const [gestationAge, setGestationAge] = useState(0);
@@ -48,37 +47,37 @@ const Home = () => {
       id: id,
     });
   };
+const calculateWeeksPregnant = (dueDateString) => {
+  // Parse the dueDate string into a Date object
+  const dueDateObject = new Date(dueDateString);
+  if (isNaN(dueDateObject.getTime())) {
+    console.error("Invalid due date format.");
+    return;
+  }
 
-  const calculateWeeksPregnant = () => {
-    // Parse the dueDate string into a Date object
-    console.log("object");
-    const dueDateObject = new Date(dueDate);
-    if (isNaN(dueDateObject.getTime())) {
-      console.error("Invalid due date format.");
-      return;
-    }
+  const currentDate = new Date(); // Current date
+  const gestationalAge = 40; // Gestational age in weeks
+  const millisecondsPerWeek = 7 * 24 * 60 * 60 * 1000; // milliseconds in a week
+  const currentTimestamp = currentDate.getTime();
+  const dueTimestamp = dueDateObject.getTime();
 
-    const currentDate = new Date(); // Current date
-    const gestationalAge = 40; // Gestational age in weeks
-    const millisecondsPerWeek = 7 * 24 * 60 * 60 * 1000; // milliseconds in a week
-    const currentTimestamp = currentDate.getTime();
-    const dueTimestamp = dueDateObject.getTime();
+  const gestationalWeeks = gestationalAge * millisecondsPerWeek;
+  let pregnancyDuration = gestationalWeeks - (dueTimestamp - currentTimestamp);
 
-    const gestationalWeeks = gestationalAge * millisecondsPerWeek;
-    let pregnancyDuration =
-      gestationalWeeks - (dueTimestamp - currentTimestamp);
+  // If pregnancy duration is greater than the maximum gestational weeks, set it to maximum
+  if (pregnancyDuration > gestationalWeeks) {
+    pregnancyDuration = gestationalWeeks;
+  }
 
-    // If pregnancy duration is greater than the maximum gestational weeks, set it to maximum
+  const weeksPregnant = Math.ceil(pregnancyDuration / millisecondsPerWeek);
 
-    const answer = Math.ceil(pregnancyDuration / millisecondsPerWeek);
-    setWeeksPregnant(answer);
+  // Assuming setWeeksPregnant and setGestationAge are functional state setters
+  setWeeksPregnant(weeksPregnant);
+  setGestationAge(weeksPregnant);
 
-    console.log("Pregnancy Duration:", pregnancyDuration);
-    console.log("Gestational Weeks:", gestationalWeeks);
-    console.log("Weeks Pregnant:", weeksPregnant);
 
-    setGestationAge(weeksPregnant);
-  };
+};
+
 
   const calculateRemainingWeeks = (weeks) => {
     const remainingWeek = 40 - weeks;
@@ -103,24 +102,21 @@ const Home = () => {
       fetchUserData();
       getPregnancyData(gestationAge.toString());
     }
-    console.log("called fetchUserData");
 
     if (dueDate) {
-      calculateWeeksPregnant();
+      calculateWeeksPregnant(dueDate);
       calculateRemainingWeeks(weeksPregnant);
     }
-    console.log("calculated remaining weeks");
   }, [userId, dueDate, gestationAge]);
 
   const fetchUserData = async () => {
     try {
       const userData = await getUserData(userId);
       if (userData) {
-        console.log(userData);
         setUserName(userData.uName);
         setDueDate(userData.dueDate);
       } else {
-        console.log("User data not found");
+        console.error("User data not found");
       }
     } catch (error) {
       console.error("Error fetching user data:", error);
@@ -130,9 +126,8 @@ const Home = () => {
   const getPregnancyData = async (week) => {
     try {
       const pregnancyData = await getPregnancyInfo(week);
-      console.log(pregnancyData, "pregnancyData");
       if (pregnancyData) {
-        console.log(pregnancyData);
+        console.log(pregnancyData );
         setPregnancyInformation(pregnancyData);
       } else {
         console.log("Pregnancy data not found");

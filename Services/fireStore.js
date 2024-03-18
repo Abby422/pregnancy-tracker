@@ -8,7 +8,7 @@ export const getUserData = async (userId) => {
 
     if (userDocSnapshot.exists()) {
       const userData = { id: userDocSnapshot.id, ...userDocSnapshot.data() };
-      console.log("User data:", userData);
+
       return userData;
     } else {
       console.log("User document does not exist!");
@@ -22,7 +22,7 @@ export const getUserData = async (userId) => {
 
 export const getTopicsData = async () => {
   try {
-    const querySnapshot = await getDocs(collection(db, "topics"))
+    const querySnapshot = await getDocs(collection(db, "topics"));
     const topics = querySnapshot.docs.map((doc) => {
       return { id: doc.id, ...doc.data() };
     });
@@ -37,7 +37,7 @@ export const getPostsData = async (topicId) => {
   try {
     const querySnapshot = await getDocs(collection(db, "posts"), topicId);
     const posts = querySnapshot.docs.map((doc) => {
-      console.log(posts, "posts")
+      console.log(posts, "posts");
       return { id: doc.id, ...doc.data() };
     });
     return posts;
@@ -50,17 +50,19 @@ export const getPostsData = async (topicId) => {
 export const getPregnancyInfo = async (weekNumber) => {
   try {
     const pregnancyInfoDocRef = doc(db, "pregnancy_info", weekNumber);
+
+    console.log(weekNumber)
     const pregnancyInfoDocSnapshot = await getDoc(pregnancyInfoDocRef);
     if (pregnancyInfoDocSnapshot.exists()) {
-      const pregnancyInfo = { id: pregnancyInfoDocSnapshot.id, ...pregnancyInfoDocSnapshot.data() };
-      
-      console.log("Pregnancy info:", pregnancyInfo.data);
-      return JSON.parse(pregnancyInfo.data);
+      const pregnancyInfo = {
+        id: pregnancyInfoDocSnapshot.id,
+        ...pregnancyInfoDocSnapshot.data(),
+      };
+      return pregnancyInfo.data;
     } else {
       console.log("Pregnancy info document does not exist!");
       return null;
     }
-    
   } catch (error) {
     console.error("Error fetching pregnancy info:", error);
     throw error;

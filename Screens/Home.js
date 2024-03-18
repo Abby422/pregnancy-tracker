@@ -71,7 +71,6 @@ const calculateWeeksPregnant = (dueDateString) => {
 
   const weeksPregnant = Math.ceil(pregnancyDuration / millisecondsPerWeek);
 
-  // Assuming setWeeksPregnant and setGestationAge are functional state setters
   setWeeksPregnant(weeksPregnant);
   setGestationAge(weeksPregnant);
 
@@ -196,7 +195,7 @@ const calculateWeeksPregnant = (dueDateString) => {
 
           <ArticleCard
             Heading={"Baby Development at " + gestationAge + " weeks"}
-            onPress={() => handleBabyDetailsPage(week.id)}
+            onPress={() => handleBabyDetailsPage(weeksPregnant)}
           />
         </View>
         <View style={styles.articlesContainer}>

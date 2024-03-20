@@ -161,7 +161,7 @@ const calculateWeeksPregnant = (dueDateString) => {
         <Text
           style={{
             fontWeight: "bold",
-            fontSize: 36,
+            fontSize: 30,
             marginLeft: 20,
             color: "#2e004d",
           }}
@@ -202,6 +202,10 @@ const calculateWeeksPregnant = (dueDateString) => {
           <Text style={{ margin: 20, fontWeight: "bold", fontSize: 24 }}>
             Info about your body
           </Text>
+          <ArticleCard
+            Heading={"Your body at " + gestationAge + " weeks"}
+            onPress={() => handleMotherDetailsPage(weeksPregnant)}
+          />
         </View>
       </ScrollView>
     </>

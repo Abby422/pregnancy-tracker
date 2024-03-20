@@ -1,25 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useState, useEffect, useRef } from "react";
-import {
-  View,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  Text,
-  KeyboardAvoidingView,
-  Dimensions,
-} from "react-native";
-import {
-  Card,
-  Title,
-  Paragraph,
-  Button,
-  Portal,
-  Dialog,
-  TextInput,
-  IconButton,
-  Icon,
-} from "react-native-paper";
+import { View, ScrollView, StyleSheet, TouchableOpacity, Text, KeyboardAvoidingView, Dimensions} from "react-native";
+import { Card, Title, Paragraph, Button, Portal, Dialog, TextInput, IconButton, Icon } from "react-native-paper";
 import CamApp from "../components/Camera";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../Services/firebaseConfig";
@@ -64,7 +46,17 @@ const Posts = ({ route }) => {
     try {
       const docRef = await addDoc(collection(db, "posts"), postData);
 
-      console.log("Post added successfully with ID: ", docRef.id);
+      if (docRef.id) {
+        setPosts([
+          ...posts,
+          {
+            id: docRef.id,
+            topicID: id,
+            postContent: post,
+          },
+        ]);
+        console.log("Post added successfully with ID: ", docRef.id);
+      }
     } catch (e) {
       console.error("Error adding post: ", e);
     }
@@ -90,10 +82,19 @@ const Posts = ({ route }) => {
     setVisible(true);
   };
 
+  
   const CustomTextInput = React.forwardRef((props, ref) => {
+    const [text, setText] = React.useState("");
+
+    const handleTextChange = (text) => {
+      setText(text);
+      if (props.onChangeText) {
+        props.onChangeText(text);
+      }
+    }
     return (
       <View style={[styles.containerText, props.style]}>
-        <TextInput {...props} style={styles.input} ref={ref} />
+        <TextInput {...props} style={styles.input} ref={ref} value={text} onChangeText={handleTextChange}/>
         <View style={styles.iconContainer}>
           <IconButton
             icon="camera"
@@ -222,19 +223,15 @@ const Posts = ({ route }) => {
             </Dialog.Actions>
           </Dialog>
         </Portal>
-        <KeyboardAvoidingView>
           <View>
             <CustomTextInput
               ref={textInputRef}
-              value={selectedPost}
               placeholder="Add Post"
-              onChangeText={(text) => setSelectedPost(text)}
               mode="outlined"
               activeOutlineColor="#ccc"
               style={{ position: "absolute", bottom: 0 }}
             />
           </View>
-        </KeyboardAvoidingView>
       </View>
     </KeyboardAvoidingView>
   );

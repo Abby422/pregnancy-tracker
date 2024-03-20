@@ -226,9 +226,7 @@ const styles = StyleSheet.create({
   },
   input: {
     marginBottom: 10,
-    marginTop: 10,
     width: width * 0.5,
-    height: height * 0.05,
     backgroundColor: "#ffffff",
     borderColor: "black",
     borderCurve: 5,

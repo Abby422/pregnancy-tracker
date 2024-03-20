@@ -58,7 +58,7 @@ export const getPregnancyInfo = async (weekNumber) => {
         id: pregnancyInfoDocSnapshot.id,
         ...pregnancyInfoDocSnapshot.data(),
       };
-      return pregnancyInfo.data;
+      return JSON.parse(pregnancyInfo.data);
     } else {
       console.log("Pregnancy info document does not exist!");
       return null;

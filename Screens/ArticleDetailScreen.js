@@ -8,12 +8,7 @@ import { getPregnancyInfo } from "../Services/fireStore";
 const ArticleDetailScreen = ({ route }) => {
   const navigation = useNavigation();
   const { id } = route.params;
-  const [pregnancyData, setPregnancyData] = React.useState([]);
-
-  console.log("pregnancyData", pregnancyData)
-  console.log(id, "id")
-  // const data = pregnancyData.find((week) => week.id === id);
-  // const Baby = data.Baby;
+  const [pregnancyData, setPregnancyData] = React.useState({});
 
   React.useEffect(() => {
     getPregnancyData(id);
@@ -22,31 +17,31 @@ const ArticleDetailScreen = ({ route }) => {
   const getPregnancyData = async (week) => {
     try {
       const babyInfo = await getPregnancyInfo(week.toString());
-      setPregnancyData(babyInfo[0]);
-      console.log("babyInfo", babyInfo[0])
+      setPregnancyData(babyInfo.Baby);
     } catch (err) {
       console.error("Error fetching pregnancy data:", err);
     }
   };
+
 
   return (
     <ScrollView style={styles.container}>
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <IconButton icon="arrow-left" size={30} iconColor="#000" />
       </TouchableOpacity>
-      {/* <Text style={styles.articleDetailTitle}>{Baby.Heading}</Text>
+      <Text style={styles.articleDetailTitle}>{pregnancyData.Heading}</Text>
       <View style={styles.contentContainer}>
         <Image
-          source={{ uri: Baby.image }}
+          source={{ uri: pregnancyData.image }}
           style={styles.articleDetailImage}
           resizeMode="cover"
         />
-        <Text style={styles.reviewedText}>{Baby.Reviewed}</Text>
-        <Text style={styles.writtenText}>{Baby.Written}</Text>
+        <Text style={styles.reviewedText}>{pregnancyData.Reviewed}</Text>
+        <Text style={styles.writtenText}>{pregnancyData.Written}</Text>
         <Divider style={styles.divider} />
-        <Text style={styles.subHeading}>{Baby.subHeading}</Text>
-        <Text style={styles.bodyText}>{Baby.text}</Text> */}
-      {/* </View> */}
+        <Text style={styles.subHeading}>{pregnancyData.subHeading}</Text>
+        <Text style={styles.bodyText}>{pregnancyData.text}</Text>
+      </View>
     </ScrollView>
   );
 };

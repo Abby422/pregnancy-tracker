@@ -1,30 +1,43 @@
 import { Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
-import { pregnancyData } from "../lib/pregnancy";
 import { Divider, IconButton } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
+import { getPregnancyInfo } from "../Services/fireStore";
 
 const MotherDetailsScreen = ({ route }) => {
   const { id } = route.params;
-  const { image, heading, text } = pregnancyData.find(
-    (week) => week.id === id
-  ).mother;
   const navigation = useNavigation();
+
+    const [mother, setMotherData] = React.useState({});
+    
+    React.useEffect(() => {
+      getPregnancyData(id);
+    }, []);
+    
+    const getPregnancyData = async (week) => {
+      try {
+        const motherInfo = await getPregnancyInfo(week.toString());
+        setMotherData(motherInfo.mother);
+        console.log(motherInfo);
+      } catch (err) {
+        console.error("Error fetching pregnancy data:", err);
+      }
+    };
 
   return (
     <ScrollView style={styles.container}>
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <IconButton icon="arrow-left" size={30} iconColor="#000" />
       </TouchableOpacity>
-      <Text style={styles.articleDetailTitle}>{heading}</Text>
+      <Text style={styles.articleDetailTitle}>{mother.heading}</Text>
       <View style={styles.content}>
         <Image
-          source={{ uri: image }}
+          source={{ uri: mother.image }}
           style={styles.articleDetailImage}
           resizeMode="cover"
         />
         <Divider style={styles.divider} />
-        <Text style={styles.articleDetailText}>{text}</Text>
+        <Text style={styles.articleDetailText}>{mother.text}</Text>
       </View>
     </ScrollView>
   );

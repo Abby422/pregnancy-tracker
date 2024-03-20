@@ -1,26 +1,13 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useState, useEffect, useContext } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  Image,
-  Dimensions,
-  StatusBar,
-} from "react-native";
+import {View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, Dimensions, StatusBar}from "react-native";
 import { FIREBASE_APP } from "../Services/firebaseConfig";
-import Svg from "react-native-svg";
+import Svg, { Path } from "react-native-svg";
 import { Divider } from "react-native-paper";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { fetchUser } from "../redux/actions";
-import {
-  fetchUserData,
-  getPregnancyInfo,
-  getUserData,
-} from "../Services/fireStore";
+import { getPregnancyInfo, getUserData } from "../Services/fireStore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import InfoCard from "../components/InfoCard";
 import ArticleCard from "../components/ArticleCard";
@@ -141,21 +128,6 @@ const calculateWeeksPregnant = (dueDateString) => {
     <>
       <ScrollView style={styles.container}>
         <View style={styles.box}>
-          <Svg
-            height={200}
-            width={Dimensions.get("screen").width}
-            viewBox="0 0 1440 320"
-            style={styles.topWavy}
-          >
-            <Image
-              style={{
-                width: Dimensions.get("screen").width,
-                position: "absolute",
-                zIndex: -1,
-              }}
-              source={require("../assets/wavvvy.jpg")}
-            />
-          </Svg>
         </View>
 
         <Text

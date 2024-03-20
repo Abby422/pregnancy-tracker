@@ -1,28 +1,46 @@
-import { Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import {
+  Dimensions,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ActivityIndicator,
+} from "react-native";
 import { Divider, IconButton } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import { getPregnancyInfo } from "../Services/fireStore";
 
-
 const ArticleDetailScreen = ({ route }) => {
   const navigation = useNavigation();
   const { id } = route.params;
-  const [pregnancyData, setPregnancyData] = React.useState({});
+  const [pregnancyData, setPregnancyData] = useState({});
+  const [loading, setLoading] = useState(true); 
 
-  React.useEffect(() => {
-    getPregnancyData(id);
-  }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const babyInfo = await getPregnancyInfo(id.toString());
+        setPregnancyData(babyInfo.Baby);
+      } catch (err) {
+        console.error("Error fetching pregnancy data:", err);
+      } finally {
+        setLoading(false); 
+      }
+    };
 
-  const getPregnancyData = async (week) => {
-    try {
-      const babyInfo = await getPregnancyInfo(week.toString());
-      setPregnancyData(babyInfo.Baby);
-    } catch (err) {
-      console.error("Error fetching pregnancy data:", err);
-    }
-  };
+    fetchData();
+  }, [id]);
 
+  if (loading) {
+    return (
+      <View style={[styles.container, styles.loadingContainer]}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
   return (
     <ScrollView style={styles.container}>
@@ -51,6 +69,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F8F8F8",
     padding: 20,
+  },
+  loadingContainer: {
+    justifyContent: "center",
+    alignItems: "center",
   },
   contentContainer: {
     marginTop: 10,

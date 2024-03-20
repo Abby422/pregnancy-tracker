@@ -2,7 +2,6 @@ import { useNavigation } from "@react-navigation/native";
 import React, { useState, useEffect, useRef } from "react";
 import { View, ScrollView, StyleSheet, TouchableOpacity, Text, KeyboardAvoidingView, Dimensions} from "react-native";
 import { Card, Title, Paragraph, Button, Portal, Dialog, TextInput, IconButton, Icon } from "react-native-paper";
-import CamApp from "../components/Camera";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../Services/firebaseConfig";
 import { getPostsData } from "../Services/fireStore";

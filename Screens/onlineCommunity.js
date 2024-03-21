@@ -66,16 +66,16 @@ const OnlineCommunity = () => {
   const containerStyle = { backgroundColor: "white", padding: 20, width: width * 0.8, height: height * 0.5, alignSelf: 'center'};
 
   const addTopic = async (topic, description) => {
-    // Logic to add the new topic and description to firebase
     const topicData = { topicName : topic, description: description };
 
     try {
-          // const userDocRef = doc(db, "topics", topic);
 
           const docRef = await addDoc(collection(db, "topics"), topicData);
 
           console.log("Topic added successfully:", topicData, docRef.id);
 
+          // Update the topics array
+          setTopics([...topics, { id: docRef.id, ...topicData }]);
 
     } catch (error) {
       console.log(error.message);
@@ -84,13 +84,10 @@ const OnlineCommunity = () => {
   };
 
   const handleNewTopic = async () => {
-    // Logic to handle the new topic and description
     console.log("New Topic:", newTopic);
     console.log("New Description:", newDescription);
 
-    // Add the new topic to the topics array
     await addTopic(newTopic, newDescription);
-    // Clear the input fields
     setNewTopic("");
     setNewDescription("");
 

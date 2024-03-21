@@ -1,26 +1,68 @@
-import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import { View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
-import { Card, Button, IconButton, Text, Menu } from "react-native-paper";
+import { Button, IconButton, Menu, Text } from "react-native-paper";
+import { useNavigation } from "@react-navigation/native";
 import { CohereClient } from "cohere-ai";
 
 const MealPlanScreen = () => {
   const [mealPlan, setMealPlan] = useState(null);
-  const [dietaryRestrictions, setDietaryRestrictions] = useState("");
+  const [dietaryPreferences, setDietaryPreferences] = useState([]);
+  const [allergies, setAllergies] = useState([]);
+  const [mealType, setMealType] = useState("");
   const [visible, setVisible] = useState(false);
   const navigation = useNavigation();
 
   const cohere = new CohereClient({
-    token: "xNGsvKUT6rean2FliNUswGxLWLAxI2QfKbsnJCW3", // This is your trial API key
+    token: "xNGsvKUT6rean2FliNUswGxLWLAxI2QfKbsnJCW3",
   });
 
-  const generateMealPlan = () => {
-    // Simulate fetching a meal plan based on dietary restrictions
-    const generatedMealPlan = async () => {
+const generateMealPlan = async () => {
+  try {
+      const mealtimePlaceholder = "{MealType}";
+      const dietaryRestrictionsPlaceholder = "{DietaryRestrictions}";
+
+      // Construct the prompt string by replacing placeholders with user selections
+      let prompt = `The following is an AI meal planner agent for pregnant women. The AI is responsible for recommending a meal plan based on the user's specified mealtime, dietary restrictions, and preferred cuisine/country. It should refrain from asking users for personal information. The AI uses data from the Nutritionix database for the food and nutrition values.
+
+Customer :\t "I'm pregnant and looking for a meal recommendation for ${mealtimePlaceholder}, considering my dietary restrictions and nutritional needs."
+
+Agent: Please provide meal options with their corresponding nutritional value per serving. With the output in a json format with meal title, ingredients, preparation, and nutritional value of the meals
+
+Mealtime Options: Breakfast, Lunch, Dinner, Snack
+
+Dietary Restrictions:
+${dietaryRestrictionsPlaceholder})}
+
+Nutritional Needs:
+- High in Iron
+- Rich in Calcium
+- Good Source of Protein
+- High in Fiber
+- Low in Sugar
+
+For example:
+Customer: "I'm pregnant and looking for a lunch recommendation, considering I'm lactose intolerant and need a meal high in iron."
+
+Agent: 
+{
+  "meal_title": "Spinach and Lentil Salad",
+  "ingredients": ["Spinach", "Lentils", "Tomatoes", "Cucumber", "Red Onion", "Feta Cheese", "Olive Oil", "Lemon Juice", "Salt", "Pepper"],
+  "preparation": "1. Cook lentils in water until tender. 2. Combine cooked lentils with spinach, diced tomatoes, sliced cucumber, diced red onion, and crumbled feta cheese. 3. Drizzle olive oil and lemon juice over the salad. 4. Season with salt and pepper to taste.",
+  "nutritional_value": {
+    "calories": 320,
+    "protein": 18,
+    "carbohydrates": 32,
+    "fat": 15,
+    "fiber": 9,
+    "iron": 6.2,
+    "calcium": 120,
+    "sugar": 5
+  }
+}`;
+
       const response = await cohere.generate({
         model: "command",
-        prompt:
-          "The following is an AI meal planner agent for pregnant women. The AI is responsible for recommending a meal plan based on the user's specified mealtime, dietary restrictions, and preferred cuisine/country. It should refrain from asking users for personal information. The AI uses data from the Nutritionix database for the food and  nutrition values.\n\nCustomer: \"I'm pregnant and looking for a Kenyan-inspired meal recommendation for Lunch, considering my dietary restrictions which are lactose intolerant and require iron rich foods\"\nAgent: Please provide meal options with their corresponding nutritional value per serving. With the output in a json format with meal title, ingredients, preparation and nutritional value of the meals\n",
+        prompt,
         maxTokens: 300,
         temperature: 1,
         k: 0,
@@ -28,37 +70,27 @@ const MealPlanScreen = () => {
         returnLikelihoods: "NONE",
       });
       console.log(`Prediction: ${response.generations[0].text}`);
-    };
-    console.log(generatedMealPlan())
-    // setMealPlan(generatedMealPlan());
-  };
+      setMealPlan(response.generations[0].text);
 
-  const renderMealPlanCard = (day, mealType, meal) => (
-    <Card key={`${day}-${mealType}`} style={styles.card}>
-      <Card.Content>
-        <Text style={styles.cardTitle}>{`${day} - ${mealType}`}</Text>
-        <Text>{meal}</Text>
-      </Card.Content>
-    </Card>
-  );
+  } catch (error) {
+    console.error("Error generating meal plan:", error);
+  }
+};
 
   const openMenu = () => setVisible(true);
 
   const closeMenu = () => setVisible(false);
 
-  const selectDietaryOption = (option) => {
-    console.log(option);
-    setDietaryRestrictions(option);
-    closeMenu();
-  };
-
-  const dietaryOptions = [
-    "Vegan",
-    "Vegetarian",
-    "Gluten-Free",
-    "Low-Carb",
-    "No Restrictions",
-  ];
+const toggleOption = (option, stateVariable, stateSetter) => {
+  if (stateVariable.includes(option)) {
+    stateSetter(stateVariable.filter((item) => item !== option));
+  } else {
+    stateSetter([...stateVariable, option]);
+  }
+};
+  const dietaryPreferencesOptions = ["Vegan", "Vegetarian", "Low-Carb"];
+  const allergiesOptions = ["Gluten-Free", "Lactose Intolerant"];
+  const mealTypeOptions = ["Breakfast", "Lunch", "Dinner"];
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -66,104 +98,113 @@ const MealPlanScreen = () => {
         onPress={() => navigation.goBack()}
         style={styles.backButton}
       >
-        <IconButton icon="arrow-left" size={30} iconColor="#000" />
+        <IconButton icon="arrow-left" size={30} color="#000" />
       </TouchableOpacity>
 
       <View style={styles.content}>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            width: "100%",
-          }}
-        >
-          <Text variant="labelLarge">Dietary restrictions:</Text>
-          <Menu
-            visible={visible}
-            style={{
-              flex: 1,
-              justifyContent: "flex-end",
-              alignItems: "center",
-            }}
-            onDismiss={closeMenu}
-            anchor={
-              <Button
-                onPress={openMenu}
-                style={{ minWidth: "50%", backgroundColor: "purple" }}
-              >
-                <Text style={{ color: "#fff" }}>
-                  {dietaryRestrictions || "Select Dietary Restrictions"}
-                </Text>
-              </Button>
-            }
-          >
-            {dietaryOptions.map((option) => (
-              <Menu.Item
-                key={option}
-                onPress={() => {
-                  selectDietaryOption(option);
-                }}
-                title={option}
-              />
-            ))}
-          </Menu>
+        <Text variant="labelLarge">Dietary Preferences:</Text>
+        <View style={styles.menu}>
+          {dietaryPreferencesOptions.map((option) => (
+            <Button
+              key={option}
+              mode={
+                dietaryPreferences.includes(option) ? "contained" : "outlined"
+              }
+              onPress={() => toggleOption(option, dietaryPreferences, setDietaryPreferences)}
+              style={styles.optionButton}
+            >
+              {option}
+            </Button>
+          ))}
         </View>
-        <Button
-          mode="contained"
-          style={styles.generateButton}
-          onPress={generateMealPlan}
+
+        <Text variant="labelLarge">Allergies:</Text>
+        <View style={styles.menu}>
+          {allergiesOptions.map((option) => (
+            <Button
+              key={option}
+              mode={allergies.includes(option) ? "contained" : "outlined"}
+              onPress={() => toggleOption(option, allergies, setAllergies)}
+              style={styles.optionButton}
+            >
+              {option}
+            </Button>
+          ))}
+        </View>
+
+        <Text variant="labelLarge">Meal Type:</Text>
+        <Menu
+          visible={visible}
+          onDismiss={closeMenu}
+          anchor={
+            <Button
+              onPress={openMenu}
+              mode="outlined"
+              style={styles.menuButton}
+            >
+              {mealType || "Select Meal Type"}
+            </Button>
+          }
         >
-          Generate Meal Plan
-        </Button>
+          {mealTypeOptions.map((option) => (
+            <Menu.Item
+              key={option}
+              onPress={() => {
+                setMealType(option);
+                closeMenu();
+              }}
+              title={option}
+            />
+          ))}
+        </Menu>
       </View>
 
       {mealPlan && (
         <View style={styles.cardContainer}>
-          {Object.keys(mealPlan).map((day) => (
-            <View key={day}>
-              {Object.keys(mealPlan[day]).map((mealType) =>
-                renderMealPlanCard(day, mealType, mealPlan[day][mealType])
-              )}
-            </View>
-          ))}
+          <Text>{mealPlan}</Text>
         </View>
       )}
+
+      <Button
+        mode="contained"
+        style={styles.generateButton}
+        onPress={generateMealPlan}
+      >
+        Generate Meal Plan
+      </Button>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
+    justifyContent: "center",
     padding: 10,
-    width: "100%",
   },
   cardContainer: {
     marginTop: 10,
   },
-  card: {
+  content: {
+    marginBottom: 20,
+  },
+  menu: {
+    flexDirection: "row",
+    flexWrap: "wrap",
     marginBottom: 10,
   },
-  cardTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 5,
+  optionButton: {
+    marginRight: 10,
+    marginBottom: 10,
   },
-  content: {
-    flex: 1,
-    marginTop: 50,
-    paddingTop: 50,
-    margin: 10,
+  menuButton: {
+    marginBottom: 10,
   },
   generateButton: {
     position: "absolute",
-    bottom: 0,
-    right: 0,
-    zIndex: 1,
+    bottom: 10,
+    right: 10,
     backgroundColor: "purple",
-    marginTop: 10,
-    alignSelf: "flex-end",
-    justifyContent: "flex-end",
   },
   backButton: {
     position: "absolute",

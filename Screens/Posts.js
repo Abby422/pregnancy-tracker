@@ -2,10 +2,12 @@ import { useNavigation } from "@react-navigation/native";
 import React, { useState, useEffect, useRef } from "react";
 import { View, ScrollView, StyleSheet, TouchableOpacity, Text, KeyboardAvoidingView, Dimensions} from "react-native";
 import { Card, Title, Paragraph, Button, Portal, Dialog, TextInput, IconButton, Icon } from "react-native-paper";
+import { FIREBASE_APP } from "../Services/firebaseConfig";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../Services/firebaseConfig";
 import { getPostsData } from "../Services/fireStore";
 import LottieView from "lottie-react-native";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
   const Loader = () => {
     return (
@@ -20,6 +22,7 @@ import LottieView from "lottie-react-native";
     );
   };
 
+  const auth = getAuth(FIREBASE_APP);
 
 const Posts = ({ route }) => {
   const navigation = useNavigation();
@@ -28,6 +31,9 @@ const Posts = ({ route }) => {
   const id = topic.id;
   const [comments, setComments] = useState([]);
   const [posts, setPosts] = useState([]);
+  const [userId, setUserId] = useState(null);
+  const [user, setUser] = useState(null);
+
 
   const getPosts = async () => {
     const postsData = await getPostsData(id);
@@ -36,11 +42,26 @@ const Posts = ({ route }) => {
   };
 
   useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUserId(user.uid);
+      }
+    });
+    if (userId) {
+      getUser();
+    }
     getPosts();
   }, []);
 
-  const addPost = async (id, post) => {
-    const postData = { topicID: id, postContent: post };
+  const getUser = async () => {
+    const user = await getUserData(userId);
+    if (user) {
+      setUser(user.uName);
+    }
+  }
+
+  const addPost = async (id, post, username) => {
+    const postData = { topicID: id, postContent: post, userName: username};
 
     try {
       const docRef = await addDoc(collection(db, "posts"), postData);
@@ -52,6 +73,7 @@ const Posts = ({ route }) => {
             id: docRef.id,
             topicID: id,
             postContent: post,
+            userName: username,
           },
         ]);
         console.log("Post added successfully with ID: ", docRef.id);
@@ -69,10 +91,8 @@ const Posts = ({ route }) => {
   const [filteredPosts, setFilteredPosts] = useState([]);
 
   const handleAddPost = () => {
-    // logic to handle adding a new post
     console.log(`Add post: ${selectedPost}`);
-    addPost(id, selectedPost);
-    // update state or send the post to backend here
+    addPost(id, selectedPost, user);
     setSelectedPost("");
     hideDialog();
   };
@@ -158,7 +178,7 @@ const Posts = ({ route }) => {
       id === post.topicID ? (
         <Card key={post.id} style={styles.card}>
           <Card.Content>
-            <Title>user</Title>
+            <Title>{post.userName}</Title>
             <Paragraph>{post.postContent}</Paragraph>
           </Card.Content>
           <Card.Actions>

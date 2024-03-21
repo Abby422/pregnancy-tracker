@@ -86,39 +86,47 @@ const WeightTracker = () => {
     setPage(0); // Reset page to 0 when items per page changes
   };
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString(); // Format the date to a human-readable format
+  };
+
   const from = page * itemsPerPage;
   const to = Math.min((page + 1) * itemsPerPage, weightEntries.length);
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.goBack()}>
-        <IconButton icon="arrow-left" size={30} iconColor="#000" />
-      </TouchableOpacity>
-      <Text style={styles.chartTitle}>Weight Tracker</Text>
-      <DataTable>
-        <DataTable.Header>
-          <DataTable.Title>Date</DataTable.Title>
-          <DataTable.Title numeric>Weight</DataTable.Title>
-        </DataTable.Header>
-        {weightEntries.slice(from, to).map((item) => (
-          <DataTable.Row key={item.date}>
-            <DataTable.Cell>{item.date}</DataTable.Cell>
-            <DataTable.Cell numeric>{item.weight}</DataTable.Cell>
-          </DataTable.Row>
-        ))}
-      </DataTable>
-      <DataTable.Pagination
-        page={page}
-        numberOfPages={Math.ceil(weightEntries.length / itemsPerPage)}
-        onPageChange={handlePageChange}
-        label={`${from + 1}-${to} of ${weightEntries.length}`}
-        numberOfItemsPerPageList={numberOfItemsPerPageList}
-        numberOfItemsPerPage={itemsPerPage}
-        onItemsPerPageChange={handleItemsPerPageChange}
-        showFastPaginationControls
-        selectPageDropdownLabel={"Rows per page"}
-      />
-      {renderPreviousWeightInput()}
+      <View style={styles.content}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <IconButton icon="arrow-left" size={30} iconColor="#000" />
+        </TouchableOpacity>
+        <Text style={styles.chartTitle}>Weight Tracker</Text>
+        <DataTable>
+          <DataTable.Header>
+            <DataTable.Title>Date</DataTable.Title>
+            <DataTable.Title numeric>Weight (kgs)</DataTable.Title>
+          </DataTable.Header>
+          {weightEntries.slice(from, to).map((item) => (
+            <DataTable.Row key={item.date}>
+              <DataTable.Cell>{formatDate(item.date)}</DataTable.Cell>
+              <DataTable.Cell numeric>{item.weight}</DataTable.Cell>
+            </DataTable.Row>
+          ))}
+        </DataTable>
+        <DataTable.Pagination
+          page={page}
+          numberOfPages={Math.ceil(weightEntries.length / itemsPerPage)}
+          onPageChange={handlePageChange}
+          label={`${from + 1}-${to} of ${weightEntries.length}`}
+          numberOfItemsPerPageList={numberOfItemsPerPageList}
+          numberOfItemsPerPage={itemsPerPage}
+          onItemsPerPageChange={handleItemsPerPageChange}
+          showFastPaginationControls
+          selectPageDropdownLabel={"Rows per page"}
+        />
+        {renderPreviousWeightInput()}
+      </View>
+
       <View style={styles.inputField}>
         <TextInput
           style={styles.input}
@@ -136,9 +144,12 @@ const WeightTracker = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#FFF",
+  },
+  content: {
+    flex: 1,
     paddingTop: 20,
     paddingHorizontal: 20,
-    backgroundColor: "#FFF",
   },
   previousWeightContainer: {
     marginBottom: 20,
@@ -160,6 +171,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    paddingHorizontal: 20,
+    paddingBottom: 20,
   },
 });
 

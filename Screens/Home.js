@@ -143,22 +143,20 @@ const Home = () => {
           </View>
         ) : (
           <>
-            <View style={styles.box}></View>
+            {/* <View style={styles.box}></View> */}
 
             <Text
-              style={{
-                fontWeight: "bold",
-                fontSize: 30,
-                marginLeft: 20,
-                color: "#2e004d",
-              }}
+              style={styles.header}
             >
               Welcome {userName ? userName : "User"}
             </Text>
-            <Image
+            <View>
+              <Image
               style={styles.image}
               source={require("../assets/Images/cute-baby.png")}
             />
+            </View>
+            
             <View style={{ margin: 10 }}>
               <InfoCard
                 style={styles.infoCard}
@@ -215,6 +213,12 @@ const styles = StyleSheet.create({
   box: {
     backgroundColor: "#f3daff",
     height: 80,
+  },
+  header: {
+    fontWeight: "bold",
+    fontSize: 30,
+    margin: 20,
+    color: "black",
   },
   topWavy: {
     top: 0,

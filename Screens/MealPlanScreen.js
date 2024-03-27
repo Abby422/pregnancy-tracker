@@ -2,9 +2,12 @@ import React, { useState } from "react";
 import { View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import { Button, IconButton, Menu, Text } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
-import { CohereClient } from "cohere-ai";
+import OpenAI from "openai";
 
 const MealPlanScreen = () => {
+  const openai = new OpenAI({
+    apiKey: "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",
+  });
   const [mealPlan, setMealPlan] = useState(null);
   const [dietaryPreferences, setDietaryPreferences] = useState([]);
   const [allergies, setAllergies] = useState([]);
@@ -12,16 +15,12 @@ const MealPlanScreen = () => {
   const [visible, setVisible] = useState(false);
   const navigation = useNavigation();
 
-  const cohere = new CohereClient({
-    token: "xNGsvKUT6rean2FliNUswGxLWLAxI2QfKbsnJCW3",
-  });
 
 const generateMealPlan = async () => {
   try {
       const mealtimePlaceholder = "{MealType}";
       const dietaryRestrictionsPlaceholder = "{DietaryRestrictions}";
 
-      // Construct the prompt string by replacing placeholders with user selections
       let prompt = `The following is an AI meal planner agent for pregnant women. The AI is responsible for recommending a meal plan based on the user's specified mealtime, dietary restrictions, and preferred cuisine/country. It should refrain from asking users for personal information. The AI uses data from the Nutritionix database for the food and nutrition values.
 
 Customer :\t "I'm pregnant and looking for a meal recommendation for ${mealtimePlaceholder}, considering my dietary restrictions and nutritional needs."
@@ -59,18 +58,24 @@ Agent:
     "sugar": 5
   }
 }`;
+            const completion = await openai.chat.completions.create({
+              messages: [
+                {
+                  role: "system",
+                  content:
+                    "You are a helpful assistant designed to output JSON.",
+                },
+                {
+                  role: "user",
+                  content: prompt,
+                },
+              ],
+              model: "gpt-3.5-turbo",
+              response_format: { type: "json_object" },
+            });
 
-      const response = await cohere.generate({
-        model: "command",
-        prompt,
-        maxTokens: 300,
-        temperature: 1,
-        k: 0,
-        stopSequences: [],
-        returnLikelihoods: "NONE",
-      });
-      console.log(`Prediction: ${response.generations[0].text}`);
-      setMealPlan(response.generations[0].text);
+      console.log(`Prediction: ${completion.choices[0].message.content}`);
+      setMealPlan(completion.choices[0].message.content);
 
   } catch (error) {
     console.error("Error generating meal plan:", error);

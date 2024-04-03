@@ -1,10 +1,23 @@
 import React, { useState } from "react";
 import { View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
-import { Button, IconButton, Menu, Text } from "react-native-paper";
+import {
+  Button,
+  IconButton,
+  Menu,
+  Modal,
+  Portal,
+  Text,
+} from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
-import { CohereClient } from "cohere-ai";
+import OpenAI from "openai";
 
 const MealPlanScreen = () => {
+  const openai = new OpenAI({
+    apiKey: "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",
+  });
+  const [modalVisible, setModalVisible] = useState(false);
+  const showModal = () => setModalVisible(true);
+  const hideModal = () => setModalVisible(false);
   const [mealPlan, setMealPlan] = useState(null);
   const [dietaryPreferences, setDietaryPreferences] = useState([]);
   const [allergies, setAllergies] = useState([]);
@@ -12,85 +25,57 @@ const MealPlanScreen = () => {
   const [visible, setVisible] = useState(false);
   const navigation = useNavigation();
 
-  const cohere = new CohereClient({
-    token: "xNGsvKUT6rean2FliNUswGxLWLAxI2QfKbsnJCW3",
-  });
+  const generateMealPlan = async (dietaryRestrictions, allergy, mealTime) => {
+    try {
+      const outputFormat = {
+        mealName: "Meal Name",
+        ingredients: "Ingredient\n ...",
+        preparationInstructions: "Preparation Instructions. \n1.\n \n 2. \n ...",
+        nutritionBenefit:" \n calories: 100, \n protein: 10g, ...",
+      };
 
-const generateMealPlan = async () => {
-  try {
-      const mealtimePlaceholder = "{MealType}";
-      const dietaryRestrictionsPlaceholder = "{DietaryRestrictions}";
-
-      // Construct the prompt string by replacing placeholders with user selections
-      let prompt = `The following is an AI meal planner agent for pregnant women. The AI is responsible for recommending a meal plan based on the user's specified mealtime, dietary restrictions, and preferred cuisine/country. It should refrain from asking users for personal information. The AI uses data from the Nutritionix database for the food and nutrition values.
-
-Customer :\t "I'm pregnant and looking for a meal recommendation for ${mealtimePlaceholder}, considering my dietary restrictions and nutritional needs."
-
-Agent: Please provide meal options with their corresponding nutritional value per serving. With the output in a json format with meal title, ingredients, preparation, and nutritional value of the meals
-
-Mealtime Options: Breakfast, Lunch, Dinner, Snack
-
-Dietary Restrictions:
-${dietaryRestrictionsPlaceholder})}
-
-Nutritional Needs:
-- High in Iron
-- Rich in Calcium
-- Good Source of Protein
-- High in Fiber
-- Low in Sugar
-
-For example:
-Customer: "I'm pregnant and looking for a lunch recommendation, considering I'm lactose intolerant and need a meal high in iron."
-
-Agent: 
-{
-  "meal_title": "Spinach and Lentil Salad",
-  "ingredients": ["Spinach", "Lentils", "Tomatoes", "Cucumber", "Red Onion", "Feta Cheese", "Olive Oil", "Lemon Juice", "Salt", "Pepper"],
-  "preparation": "1. Cook lentils in water until tender. 2. Combine cooked lentils with spinach, diced tomatoes, sliced cucumber, diced red onion, and crumbled feta cheese. 3. Drizzle olive oil and lemon juice over the salad. 4. Season with salt and pepper to taste.",
-  "nutritional_value": {
-    "calories": 320,
-    "protein": 18,
-    "carbohydrates": 32,
-    "fat": 15,
-    "fiber": 9,
-    "iron": 6.2,
-    "calcium": 120,
-    "sugar": 5
-  }
-}`;
-
-      const response = await cohere.generate({
-        model: "command",
-        prompt,
-        maxTokens: 300,
-        temperature: 1,
-        k: 0,
-        stopSequences: [],
-        returnLikelihoods: "NONE",
+      const prompt = `Generate a kenyan commonly paired meal plan for me with ingredients locally found in Kenya. I am looking for a healthy ${mealTime} meal that is ${dietaryRestrictions} and ${allergy}. The meal should be healthy and easy to prepare. The output should be in the following format: ${JSON.stringify(
+        outputFormat
+      )}`;
+      const completion = await openai.chat.completions.create({
+        messages: [
+          {
+            role: "system",
+            content: "You are a helpful assistant designed to output JSON.",
+          },
+          {
+            role: "user",
+            content: prompt,
+          },
+        ],
+        model: "gpt-3.5-turbo",
+        response_format: { type: "json_object" },
       });
-      console.log(`Prediction: ${response.generations[0].text}`);
-      setMealPlan(response.generations[0].text);
 
-  } catch (error) {
-    console.error("Error generating meal plan:", error);
-  }
-};
+      const mealPlan = completion.choices[0].message.content;
+
+      console.log(`Prediction: ${completion.choices[0].message.content}`);
+      setMealPlan(JSON.parse(mealPlan));
+      showModal();
+    } catch (error) {
+      console.error("Error generating meal plan:", error);
+    }
+  };
 
   const openMenu = () => setVisible(true);
 
   const closeMenu = () => setVisible(false);
 
-const toggleOption = (option, stateVariable, stateSetter) => {
-  if (stateVariable.includes(option)) {
-    stateSetter(stateVariable.filter((item) => item !== option));
-  } else {
-    stateSetter([...stateVariable, option]);
-  }
-};
-  const dietaryPreferencesOptions = ["Vegan", "Vegetarian", "Low-Carb"];
-  const allergiesOptions = ["Gluten-Free", "Lactose Intolerant"];
-  const mealTypeOptions = ["Breakfast", "Lunch", "Dinner"];
+  const toggleOption = (option, stateVariable, stateSetter) => {
+    if (stateVariable.includes(option)) {
+      stateSetter(stateVariable.filter((item) => item !== option));
+    } else {
+      stateSetter([...stateVariable, option]);
+    }
+  };
+  const dietaryPreferencesOptions = ["Vegan", "Vegetarian", "Low-Carb", "Keto", "Paleo", "Pescatarian", "Mediterranean", "Whole30", "Flexitarian"];
+  const allergiesOptions = ["Gluten-Free", "Lactose Intolerant", "Nut Allergy", "Shellfish Allergy", "Soy Allergy", "Egg Allergy"];
+  const mealTypeOptions = ["Breakfast", "Lunch", "Dinner", "Snack"];
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -110,7 +95,9 @@ const toggleOption = (option, stateVariable, stateSetter) => {
               mode={
                 dietaryPreferences.includes(option) ? "contained" : "outlined"
               }
-              onPress={() => toggleOption(option, dietaryPreferences, setDietaryPreferences)}
+              onPress={() =>
+                toggleOption(option, dietaryPreferences, setDietaryPreferences)
+              }
               style={styles.optionButton}
             >
               {option}
@@ -160,15 +147,58 @@ const toggleOption = (option, stateVariable, stateSetter) => {
       </View>
 
       {mealPlan && (
-        <View style={styles.cardContainer}>
-          <Text>{mealPlan}</Text>
-        </View>
+        <Portal>
+          <Modal
+            visible={modalVisible}
+            onDismiss={hideModal}
+            contentContainerStyle={{
+              backgroundColor: "white",
+              padding: 20,
+              margin: 20,
+              position: "relative",
+            }}
+          >
+        <ScrollView showsVerticalScrollIndicator = {false}  >
+          <View style={{position: "absolute", top: 0, right: 0, zIndex: 1}}>
+            <IconButton
+              icon="close"
+              size={30}
+              onPress={hideModal}
+            />
+            </View>
+            <View style={styles.cardContainer}>
+              <Text variant="headlineMedium">{mealPlan.mealName}</Text>
+              <Text variant="headlineSmall" style={styles.headline}>
+                Ingredients
+              </Text>
+              <Text>{mealPlan.ingredients}</Text>
+              <Text variant="headlineSmall" style={styles.headline}>
+                Preparation Instructions
+              </Text>
+              <Text>{mealPlan.preparationInstructions}</Text>
+              <Text variant="headlineSmall" style={styles.headline}>
+                Nutrition Benefit
+              </Text>
+              <Text style={{paddingBottom: 10}}>{mealPlan.nutritionBenefit}</Text>
+            </View>
+            <View style={{position: "absolute", bottom: 0, right: 0, zIndex: 1}}>
+            <IconButton
+              icon="content-save"
+              size={30}
+              onPress={() => {console.log("Meal Plan Saved")}}
+            />
+            </View>
+        </ScrollView>
+          </Modal>
+        </Portal>
       )}
 
       <Button
         mode="contained"
         style={styles.generateButton}
-        onPress={generateMealPlan}
+        onPress={() =>
+          generateMealPlan(dietaryPreferences, allergies, mealType)
+        }
       >
         Generate Meal Plan
       </Button>
@@ -184,6 +214,7 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     marginTop: 10,
+    padding: 12,
   },
   content: {
     marginBottom: 20,
@@ -210,6 +241,10 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 10,
     left: 10,
+  },
+  headline: {
+    marginTop: 20,
+    marginBottom: 10,
   },
 });
 

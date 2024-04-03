@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import {
   View,
-  Text,
   KeyboardAvoidingView,
   TouchableOpacity,
   TextInput,
   StyleSheet,
   Image,
 } from "react-native";
-import { Button, MD3Colors } from "react-native-paper";
+import { Button, MD3Colors, Text } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import { register } from "../Services/firebaseAuth";
 
@@ -63,16 +62,13 @@ function Register({route}) {
   return (
     <View style={styles.container}>
       <KeyboardAvoidingView behavior="padding" style={styles.innerContainer}>
-        <Image
-          source={require("../assets/Images/cute-baby.png")}
-          style={styles.image}
-        />
-        <Text style={{ fontSize: 30, fontWeight: "bold" }}>
+        <Text variant="headlineMedium" style={styles.upperText}>
           Welcome to PTracker
         </Text>
         <TextInput
           placeholder="Name"
           name="name"
+          require
           style={styles.input}
           value={uName}
           onChangeText={(text) => setuName(text)}
@@ -81,6 +77,7 @@ function Register({route}) {
         <TextInput
           placeholder="Email"
           autoFocus
+          require
           name="email"
           style={styles.input}
           value={email}
@@ -89,6 +86,7 @@ function Register({route}) {
         />
         <TextInput
           placeholder="Password"
+          require
           secureTextEntry
           name="password"
           style={styles.input}
@@ -129,11 +127,9 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: MD3Colors.grey50, // Light Purple
+    backgroundColor: MD3Colors.grey50, 
   },
   upperText: {
-    fontSize: 20,
-    fontWeight: "600",
     textAlign: "center",
     marginVertical: 10,
   },

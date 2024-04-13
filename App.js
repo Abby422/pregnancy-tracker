@@ -26,6 +26,9 @@ import { createStore, applyMiddleware } from "redux";
 import rootReducer from "./redux/reducers";
 import { thunk } from "redux-thunk";
 import WeightTracker from "./Screens/WeightTracker";
+import HospitalBag from "./Screens/HospitalBag";
+import SymptomTracker from "./Screens/SymptomTracker";
+import BabyName from "./Screens/BabyName";
 
 const store = createStore(rootReducer, applyMiddleware(thunk));
 
@@ -146,6 +149,9 @@ export default function App() {
               <Stack.Screen name="Posts" component={Posts} />
               <Stack.Screen name="MealPlanScreen" component={MealPlanScreen} />
               <Stack.Screen name="Exercise" component={Exercise} />
+              <Stack.Screen name="HospitalBag" component={HospitalBag} />
+              <Stack.Screen name="SymptomTracker" component={SymptomTracker} />
+              <Stack.Screen name="BabyName" component={BabyName} />
               <Stack.Screen name="WeightTracker" component={WeightTracker} />
             </>
           ) : (

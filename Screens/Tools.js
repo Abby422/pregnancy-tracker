@@ -7,12 +7,10 @@ const {width, height} = Dimensions.get('screen');
 const Tools = () => {
   const tools = [
     { title: "Weight Tracker", icon: "📊", screen: "WeightTracker" },
-    { title: "Kick Counter", icon: "👣", screen: "KickCounter" },
     { title: "Baby Names", icon: "👶", screen: "BabyName" },
     { title: "Hospital Bag Checklist", icon: "🎒", screen: "HospitalBag" },
     { title: "Nutrition Guide", icon: "🍎", screen: "MealPlanScreen" },
     { title: "Exercise Guide", icon: "🏃", screen: "Exercise" },
-    { title: "Contraction Timer", icon: "👶", screen: "ContractionTimer"},
     { title: "Symptom Tracker", icon: "🤒", screen: "SymptomTracker"},
   ];
   const navigation = useNavigation();
@@ -23,6 +21,15 @@ const Tools = () => {
 
   return (
     <View style={styles.container}>
+    <Text
+        style={{
+          fontSize: 20,
+          fontWeight: "bold",
+          marginTop: 20,
+          marginBottom: 10,
+        }}
+      >Tools</Text>
+      <View style={styles.content}>
       {tools.map((tool, index) => (
         <TouchableOpacity
           key={index}
@@ -34,17 +41,22 @@ const Tools = () => {
         </TouchableOpacity>
       ))}
     </View>
+    </View>
+    
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 16,
+  },
+  content: {
+    flex: 1,
     flexDirection: "row",
     flexWrap: "wrap",
+    alignContent: "center",
     justifyContent: "space-between",
-    padding: 16,
-    marginTop: 20,
   },
   card: {
     width: "48%",

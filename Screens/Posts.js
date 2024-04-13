@@ -5,7 +5,7 @@ import { Card, Title, Paragraph, Button, Portal, Dialog, TextInput, IconButton, 
 import { FIREBASE_APP } from "../Services/firebaseConfig";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../Services/firebaseConfig";
-import { getPostsData } from "../Services/fireStore";
+import { getPostsData, getUserData } from "../Services/fireStore";
 import LottieView from "lottie-react-native";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
@@ -37,7 +37,6 @@ const Posts = ({ route }) => {
 
   const getPosts = async () => {
     const postsData = await getPostsData(id);
-    console.log(postsData, "postsData");
     setPosts(postsData);
   };
 

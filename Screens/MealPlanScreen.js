@@ -30,8 +30,9 @@ const MealPlanScreen = () => {
       const outputFormat = {
         mealName: "Meal Name",
         ingredients: "Ingredient\n ...",
-        preparationInstructions: "Preparation Instructions. \n1.\n \n 2. \n ...",
-        nutritionBenefit:" \n calories: 100, \n protein: 10g, ...",
+        preparationInstructions:
+          "Preparation Instructions. \n1.\n \n 2. \n ...",
+        nutritionBenefit: " \n calories: 100, \n protein: 10g, ...",
       };
 
       const prompt = `Generate a kenyan commonly paired meal plan for me with ingredients locally found in Kenya. I am looking for a healthy ${mealTime} meal that is ${dietaryRestrictions} and ${allergy}. The meal should be healthy and easy to prepare. The output should be in the following format: ${JSON.stringify(
@@ -73,8 +74,25 @@ const MealPlanScreen = () => {
       stateSetter([...stateVariable, option]);
     }
   };
-  const dietaryPreferencesOptions = ["Vegan", "Vegetarian", "Low-Carb", "Keto", "Paleo", "Pescatarian", "Mediterranean", "Whole30", "Flexitarian"];
-  const allergiesOptions = ["Gluten-Free", "Lactose Intolerant", "Nut Allergy", "Shellfish Allergy", "Soy Allergy", "Egg Allergy"];
+  const dietaryPreferencesOptions = [
+    "Vegan",
+    "Vegetarian",
+    "Low-Carb",
+    "Keto",
+    "Paleo",
+    "Pescatarian",
+    "Mediterranean",
+    "Whole30",
+    "Flexitarian",
+  ];
+  const allergiesOptions = [
+    "Gluten-Free",
+    "Lactose Intolerant",
+    "Nut Allergy",
+    "Shellfish Allergy",
+    "Soy Allergy",
+    "Egg Allergy",
+  ];
   const mealTypeOptions = ["Breakfast", "Lunch", "Dinner", "Snack"];
 
   return (
@@ -158,37 +176,41 @@ const MealPlanScreen = () => {
               position: "relative",
             }}
           >
-        <ScrollView showsVerticalScrollIndicator = {false}  >
-          <View style={{position: "absolute", top: 0, right: 0, zIndex: 1}}>
-            <IconButton
-              icon="close"
-              size={30}
-              onPress={hideModal}
-            />
-            </View>
-            <View style={styles.cardContainer}>
-              <Text variant="headlineMedium">{mealPlan.mealName}</Text>
-              <Text variant="headlineSmall" style={styles.headline}>
-                Ingredients
-              </Text>
-              <Text>{mealPlan.ingredients}</Text>
-              <Text variant="headlineSmall" style={styles.headline}>
-                Preparation Instructions
-              </Text>
-              <Text>{mealPlan.preparationInstructions}</Text>
-              <Text variant="headlineSmall" style={styles.headline}>
-                Nutrition Benefit
-              </Text>
-              <Text style={{paddingBottom: 10}}>{mealPlan.nutritionBenefit}</Text>
-            </View>
-            <View style={{position: "absolute", bottom: 0, right: 0, zIndex: 1}}>
-            <IconButton
-              icon="content-save"
-              size={30}
-              onPress={() => {console.log("Meal Plan Saved")}}
-            />
-            </View>
-        </ScrollView>
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <View
+                style={{ position: "absolute", top: 0, right: 0, zIndex: 1 }}
+              >
+                <IconButton icon="close" size={30} onPress={hideModal} />
+              </View>
+              <View style={styles.cardContainer}>
+                <Text variant="headlineMedium">{mealPlan.mealName}</Text>
+                <Text variant="headlineSmall" style={styles.headline}>
+                  Ingredients
+                </Text>
+                <Text>{mealPlan.ingredients}</Text>
+                <Text variant="headlineSmall" style={styles.headline}>
+                  Preparation Instructions
+                </Text>
+                <Text>{mealPlan.preparationInstructions}</Text>
+                <Text variant="headlineSmall" style={styles.headline}>
+                  Nutrition Benefit
+                </Text>
+                <Text style={{ paddingBottom: 10 }}>
+                  {mealPlan.nutritionBenefit}
+                </Text>
+              </View>
+              <View
+                style={{ position: "absolute", bottom: 0, right: 0, zIndex: 1 }}
+              >
+                <IconButton
+                  icon="content-save"
+                  size={30}
+                  onPress={() => {
+                    console.log("Meal Plan Saved");
+                  }}
+                />
+              </View>
+            </ScrollView>
           </Modal>
         </Portal>
       )}
@@ -235,7 +257,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 10,
     right: 10,
-    backgroundColor: "purple",
   },
   backButton: {
     position: "absolute",

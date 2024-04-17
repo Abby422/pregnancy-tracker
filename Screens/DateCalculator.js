@@ -8,7 +8,6 @@ import {
   ScrollView,
   TextInput,
 } from "react-native";
-import ModalDropdown from "react-native-modal-dropdown";
 import {
   Icon,
   IconButton,
@@ -20,8 +19,8 @@ import {
 } from "react-native-paper";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import moment from "moment";
-import Dropdown from "../components/DropDown";
 import { useNavigation } from "@react-navigation/native";
+
 const DateCalculator = () => {
   const navigation = useNavigation();
   const [method, setMethod] = useState("");
@@ -99,16 +98,17 @@ const DateCalculator = () => {
   };
 
   const routeToRegistration = (dueDate) => {
+    if (!dueDate) {
+      alert("Please select a method and date");
+      return;
+    }
     navigation.navigate("Register", {
       dueDate : dueDate,
     });
   }
   const calculateDueDate = (date) => {
-    console.log(date);
-    // Add your calculation logic based on the selected method
     let dueDate;
 
-    console.log("method", method, date);
     switch (method) {
       case "period":
         dueDate = new Date(date);
@@ -131,20 +131,15 @@ const DateCalculator = () => {
         dueDate.setDate(dueDate.getDate() + 266);
         break;
       case "ultrasound":
-        //  compute the due date given the number of weeks and days pregnant given the date of utlrasound
         dueDate = new Date();
         let givenDate = new Date(date);
         let numberOfDaysAlreadyPregnant = ultrasoundWeeks*7 + ultrasoundDays;
         dueDate.setDate(givenDate.getDate() + 266 - numberOfDaysAlreadyPregnant);
         break;
       default:
-        // Default case, no specific method selected
         dueDate = null;
         break;
     }
-
-    // Due date is calculated, you can use it as needed
-    console.log("Due Date:", dueDate);
     setDueDate(dueDate);
 
     dueDate && routeToRegistration(dueDate.toDateString());

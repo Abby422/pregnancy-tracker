@@ -152,7 +152,7 @@ const OnlineCommunity = () => {
         value={searchQuery}
         size="true"
         onIconPress={() => {
-          console.log("Searching...");
+          console.log("Searching for:", searchQuery);
         }}
       />
       <View style={styles.filter}>
@@ -164,7 +164,7 @@ const OnlineCommunity = () => {
             style={styles.fab}
             onPress={showModal}
           />
-          <FAB
+          {/* <FAB
             icon="book"
             style={styles.fab}
             onPress={() => console.log("Pressed")}
@@ -183,7 +183,7 @@ const OnlineCommunity = () => {
             size="true"
             style={styles.fab}
             onPress={() => console.log("Pressed")}
-          />
+          /> */}
         </ScrollView>
       </View>
       <ScrollView>

@@ -176,17 +176,17 @@ const Home = () => {
 
             <View style={styles.articlesContainer}>
               <Text style={{ margin: 20, fontWeight: "bold", fontSize: 24 }}>
-                Info about your baby
+                Information about your baby
               </Text>
 
               <ArticleCard
-                Heading={"Baby Development at " + gestationAge + " weeks"}
+                Heading={"Baby at " + gestationAge + " weeks"}
                 onPress={() => handleBabyDetailsPage(weeksPregnant)}
               />
             </View>
             <View style={styles.articlesContainer}>
               <Text style={{ margin: 20, fontWeight: "bold", fontSize: 24 }}>
-                Info about your body
+                Information about your body
               </Text>
               <ArticleCard
                 Heading={"Your body at " + gestationAge + " weeks"}
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   articlesContainer: {
-    // Adjust styles for article container as needed
+    alignItems: "center",
   },
   card: {
     backgroundColor: "#fff",

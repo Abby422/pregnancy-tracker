@@ -1,27 +1,38 @@
 import React, { useState } from "react";
-import { View, TextInput, FlatList, StyleSheet, TouchableOpacity } from "react-native";
-import {IconButton, Button} from "react-native-paper"
+import { View, TextInput, FlatList, StyleSheet, TouchableOpacity, Alert } from "react-native";
+import {IconButton, Button, Text} from "react-native-paper"
 import TodoItem from "../components/TodoItem";
 import { useNavigation } from "@react-navigation/native";
+import { addShoppingListItem, deleteShoppingListItem } from "../Services/fireStore";
 
 
 const HospitalBag = () => {
   const navigation = useNavigation();
   const [tasks, setTasks] = useState([
-    { id: 1, text: "Doctor Appointment", completed: true },
-    { id: 2, text: "Meeting at School", completed: false },
+    { id: 1, text: "Baby's clothes", completed: true },
+    { id: 2, text: "Crib", completed: false },
   ]);
   const [text, setText] = useState("");
 
-  const addTask = () => {
+  const addTask = async () => {
     if (text.trim() !== "") {
       const newTask = { id: Date.now(), text, completed: false };
+      const response = await addShoppingListItem(newTask);
+      if (!response) {
+        Alert.alert("Error", "Failed to add item", [{ text: "OK" }]);
+        return;
+      } else {
+        Alert.alert("Success", "Item added successfully", [{ text: "OK" }]);
+      }
       setTasks([...tasks, newTask]);
       setText("");
     }
+    if (text.trim() === "") {
+      Alert.alert("Error", "Please enter an item", [{ text: "OK" }]);
+    }
   };
 
-  const deleteTask = (id) => {
+  const deleteTask =  (id) => {
     setTasks(tasks.filter((task) => task.id !== id));
   };
 
@@ -38,6 +49,9 @@ const HospitalBag = () => {
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <IconButton icon="arrow-left" size={30} iconColor="#000" />
       </TouchableOpacity>
+      <View style={{alignItems: "center"}}> 
+        <Text variant="headlineSmall">Baby Shopping List</Text>
+      </View>
       <FlatList
         style={styles.taskList}
         data={tasks}

@@ -47,6 +47,30 @@ export const getPostsData = async (topicId) => {
   }
 };
 
+export const getCommentData = async (postID) => {
+  try {
+    const querySnapshot = await getDocs(collection(db, "comments"), postID);
+    const comments = querySnapshot.docs.map((doc) => {
+      return { id: doc.id, ...doc.data() };
+    });
+    return comments;
+  } catch (error) {
+    console.error("Error fetching comment data:", error);
+    throw error;
+  }
+}
+
+export const postComment = async (commentEntry) => {
+  try {
+    const docRef = await collection(db, "comments");
+    await addDoc(docRef, commentEntry);
+
+    return true;
+  } catch (error) {
+    console.error("Error posting comment:", error);
+    throw error;
+  }
+}
 export const getPregnancyInfo = async (weekNumber) => {
   try {
     const pregnancyInfoDocRef = doc(db, "pregnancy_info", weekNumber);
@@ -118,6 +142,70 @@ export const getSymptoms = async (userId) => {
     return entries;
   } catch (error) {
     console.error("Error loading symptom entries:", error);
+    throw error;
+  }
+}
+
+export const deleteSymptom = async (symptomId) => {
+  try {
+    const symptomRef = doc(db, "symptoms", symptomId);
+    await symptomRef.delete();
+
+    return true;
+  } catch (error) {
+    console.error("Error deleting symptom entry:", error);
+    throw error;
+  }
+}
+
+export const updateSymptom = async (symptomId, updatedEntry) => {
+  try {
+    const symptomRef = doc(db, "symptoms", symptomId);
+    await setDoc(symptomRef, updatedEntry);
+
+    return true;
+  } catch (error) {
+    console.error("Error updating symptom entry:", error);
+    throw error;
+  }
+}
+
+export const addShoppingListItem = async (item) => {
+  try {
+    const docRef = await collection(db, "shopping_list");
+    await addDoc(docRef, item);
+
+    return true;
+  } catch (error) {
+    console.error("Error adding shopping list item:", error);
+    throw error;
+  }
+}
+
+export const getShoppingList = async (userId) => {
+  try {
+    const listRef = collection(db, "shopping_list");
+    const q = query(listRef, where("userId", "==", userId));
+    const snapshot = await getDocs(q);
+    const items = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    return items;
+  } catch (error) {
+    console.error("Error loading shopping list items:", error);
+    throw error;
+  }
+}
+
+export const deleteShoppingListItem = async (itemId) => {
+  try {
+    const itemRef = doc(db, "shopping_list", itemId);
+    await itemRef.delete();
+
+    return true;
+  } catch (error) {
+    console.error("Error deleting shopping list item:", error);
     throw error;
   }
 }

@@ -5,19 +5,14 @@ import { Card, Title, Paragraph, Button, Portal, Dialog, TextInput, IconButton, 
 import { FIREBASE_APP } from "../Services/firebaseConfig";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../Services/firebaseConfig";
-import { getPostsData, getUserData } from "../Services/fireStore";
+import { getCommentData, getPostsData, getUserData, postComment } from "../Services/fireStore";
 import LottieView from "lottie-react-native";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
   const Loader = () => {
     return (
       <View style={styles.loader}>
-        <LottieView
-          source={require("../assets/animation.json")}
-          autoPlay
-          loop
-          style={styles.loader}
-        />
+        <Text>No posts here</Text>
       </View>
     );
   };
@@ -39,6 +34,15 @@ const Posts = ({ route }) => {
     setPosts(postsData);
   };
 
+   const fetchComments = async (postId) => {
+     try {
+       const commentsData = await getCommentData(postId);
+       setComments(commentsData);
+     } catch (error) {
+       console.error("Error fetching comments:", error);
+     }
+   };
+
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -58,7 +62,31 @@ const Posts = ({ route }) => {
     }
   }
 
+  const handleAddComment = async (post) => {
+    try {
+      if (!comment.trim()) return;
+
+      await postComment({ postId: post.id, content: comment });
+      // After posting the comment, refresh comments
+      await fetchComments(selectedPost.id);
+      setComment(""); // Clear comment input
+      hideDialog(); // Hide dialog after posting comment
+    } catch (error) {
+      console.error("Error posting comment:", error);
+    }
+  };
+
+  // Function to show comments for a post
+  const handleViewComments = async (post) => {
+    setSelectedPost(post); // Set selected post
+    setVisible(true); // Show dialog
+    await fetchComments(post.id); // Fetch comments for the selected post
+  };
+
   const addPost = async (id, post, username) => {
+    if (!post) {
+      return;
+    }
     const postData = { topicID: id, postContent: post, userName: username};
 
     try {
@@ -88,9 +116,8 @@ const Posts = ({ route }) => {
   const textInputRef = useRef(null);
   const [filteredPosts, setFilteredPosts] = useState([]);
 
-  const handleAddPost = () => {
-    console.log(`Add post: ${selectedPost}`);
-    addPost(id, selectedPost, user);
+  const handleAddPost = (text) => {
+    addPost(id, text, user);
     setSelectedPost("");
     hideDialog();
   };
@@ -114,13 +141,8 @@ const Posts = ({ route }) => {
         <TextInput {...props} style={styles.input} ref={ref} value={text} onChangeText={handleTextChange}/>
         <View style={styles.iconContainer}>
           <IconButton
-            icon="camera"
-            onPress={() => console.log("Camera icon pressed")}
-            style={styles.icon}
-          />
-          <IconButton
             icon="send"
-            onPress={() => handleAddPost()}
+            onPress={() => handleAddPost(text)}
             style={styles.icon}
           />
         </View>
@@ -145,16 +167,6 @@ const Posts = ({ route }) => {
     ]);
     // update state or send the comment to backend here
     hideDialog();
-  };
-
-  const handleAddComment = (post) => {
-    const updatedPosts = filteredPosts.map((p) => {
-      if (p.id === post.id) {
-        return { ...p, showCommentInput: !p.showCommentInput };
-      }
-      return p;
-    });
-    setFilteredPosts(updatedPosts);
   };
 
   const showComments = (postId) => {
@@ -182,7 +194,7 @@ const Posts = ({ route }) => {
           <Card.Actions>
             <TouchableOpacity
               style={styles.button}
-              onPress={() => showComments(post.id)}
+              onPress={() => handleViewComments(post)}
             >
               <IconButton icon="comment" size={20} color="#007AFF" />
               <Text style={styles.buttonText}>View Comments</Text>
@@ -219,7 +231,9 @@ const Posts = ({ route }) => {
         <ScrollView>
         {posts ? <View style={styles.content}>{renderPosts()}</View>
         :
-        <><Loader /></>}
+        <>
+          <Text>No posts here, be the first</Text>
+        </>}
           
         </ScrollView>
 
@@ -236,7 +250,7 @@ const Posts = ({ route }) => {
               />
             </Dialog.Content>
             <Dialog.Actions>
-              <Button onPress={handleComment}>Comment</Button>
+              <Button onPress={handleAddComment}>Comment</Button>
             </Dialog.Actions>
           </Dialog>
         </Portal>

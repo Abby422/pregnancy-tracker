@@ -11,10 +11,8 @@ const Profile = () => {
 
   const handleLogout = async () => {
     try {
-      // Sign out the user using Firebase
       await auth.signOut();
 
-      // Navigate to the login screen
       navigation.navigate("OnBoarding");
     } catch (error) {
       console.error("Error during logout:", error.message);
@@ -23,13 +21,24 @@ const Profile = () => {
 
   return (
     <View style={styles.container}>
-      {/* Your profile content goes here */}
-      <Text>Profile Information</Text>
+      <Text
+        style={{
+          fontSize: 20,
+          fontWeight: "bold",
+          marginTop: 20,
+          marginBottom: 10,
+        }}
+      >
+        Profile Information
+      </Text>
 
-      {/* Logout button */}
-      <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
-        <Text style={styles.logoutButtonText}>Logout</Text>
-      </TouchableOpacity>
+      <View style={{ marginVertical: 10 }}>
+        <Text>Name: John Doe</Text>
+        <Text>Email: john@doe.com </Text>
+      </View>
+      <Button mode="outlined" onPress={handleLogout}>
+        Logout
+      </Button>
     </View>
   );
 };
@@ -37,13 +46,10 @@ const Profile = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
+    },
   logoutButton: {
     marginTop: 20,
     padding: 10,
-    backgroundColor: "#FF0000", // Customize the button color
     borderRadius: 5,
   },
   logoutButtonText: {

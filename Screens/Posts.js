@@ -27,7 +27,6 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 const Posts = ({ route }) => {
   const navigation = useNavigation();
   const { topic } = route.params;
-  console.log(topic, "topic");
   const id = topic.id;
   const [comments, setComments] = useState([]);
   const [posts, setPosts] = useState([]);

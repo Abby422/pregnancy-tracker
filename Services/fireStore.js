@@ -50,8 +50,6 @@ export const getPostsData = async (topicId) => {
 export const getPregnancyInfo = async (weekNumber) => {
   try {
     const pregnancyInfoDocRef = doc(db, "pregnancy_info", weekNumber);
-
-    console.log(weekNumber)
     const pregnancyInfoDocSnapshot = await getDoc(pregnancyInfoDocRef);
     if (pregnancyInfoDocSnapshot.exists()) {
       const pregnancyInfo = {
@@ -65,6 +63,33 @@ export const getPregnancyInfo = async (weekNumber) => {
     }
   } catch (error) {
     console.error("Error fetching pregnancy info:", error);
+    throw error;
+  }
+};
+
+//get baby names from firestore
+export const getBabyGirlNames = async () => {
+  try {
+    const querySnapshot = await getDocs(collection(db, "baby_names"));
+    const babyNames = querySnapshot.docs.map((doc) => {
+      return { id: doc.id, ...doc.data() };
+    });
+    return JSON.parse(babyNames[0].g_name);
+  } catch (error) {
+    console.error("Error fetching baby names:", error);
+    throw error;
+  }
+};
+
+export const getBabyBoyNames = async () => {
+  try {
+    const querySnapshot = await getDocs(collection(db, "baby_names"));
+    const babyNames = querySnapshot.docs.map((doc) => {
+      return { id: doc.id, ...doc.data() };
+    });
+    return JSON.parse(babyNames[1].b_name);
+  } catch (error) {
+    console.error("Error fetching baby names:", error);
     throw error;
   }
 };

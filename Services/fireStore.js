@@ -1,4 +1,4 @@
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, getDocs, query, where } from "firebase/firestore";
 import { db } from "./firebaseConfig";
 
 export const getUserData = async (userId) => {
@@ -93,3 +93,31 @@ export const getBabyBoyNames = async () => {
     throw error;
   }
 };
+
+export const postSymptoms = async (symptomEntry) => {
+  try {
+    const docRef = await collection(db, "symptoms");
+    await addDoc(docRef, symptomEntry);
+
+    return true;
+  } catch (error) {
+    console.error("Error posting symptoms:", error);
+    throw error;
+  }
+}
+
+export const getSymptoms = async (userId) => {
+  try {
+    const symptomRef = collection(db, "symptoms");
+    const q = query(symptomRef, where("userId", "==", userId));
+    const snapshot = await getDocs(q);
+    const entries = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    return entries;
+  } catch (error) {
+    console.error("Error loading symptom entries:", error);
+    throw error;
+  }
+}

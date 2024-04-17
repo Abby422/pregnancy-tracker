@@ -29,6 +29,7 @@ import WeightTracker from "./Screens/WeightTracker";
 import HospitalBag from "./Screens/HospitalBag";
 import SymptomTracker from "./Screens/SymptomTracker";
 import BabyName from "./Screens/BabyName";
+import SymptomForm from "./Screens/SymptomForm";
 
 const store = createStore(rootReducer, applyMiddleware(thunk));
 
@@ -147,6 +148,7 @@ export default function App() {
                 component={MotherDetailsScreen}
               />
               <Stack.Screen name="Posts" component={Posts} />
+              <Stack.Screen name="SymptomForm" component={SymptomForm} />
               <Stack.Screen name="MealPlanScreen" component={MealPlanScreen} />
               <Stack.Screen name="Exercise" component={Exercise} />
               <Stack.Screen name="HospitalBag" component={HospitalBag} />

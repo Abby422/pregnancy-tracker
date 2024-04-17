@@ -1,6 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from "react-native";
+import { Card } from "react-native-paper";
 
 const {width, height} = Dimensions.get('screen');
 
@@ -8,7 +9,7 @@ const Tools = () => {
   const tools = [
     { title: "Weight Tracker", icon: "📊", screen: "WeightTracker" },
     { title: "Baby Names", icon: "👶", screen: "BabyName" },
-    { title: "Hospital Bag Checklist", icon: "🎒", screen: "HospitalBag" },
+    { title: "Baby Products", icon: "🎒", screen: "HospitalBag" },
     { title: "Nutrition Guide", icon: "🍎", screen: "MealPlanScreen" },
     { title: "Exercise Guide", icon: "🏃", screen: "Exercise" },
     { title: "Symptom Tracker", icon: "🤒", screen: "SymptomTracker"},
@@ -31,14 +32,15 @@ const Tools = () => {
       >Tools</Text>
       <View style={styles.content}>
       {tools.map((tool, index) => (
-        <TouchableOpacity
+        <Card
           key={index}
+          mode="outlined"
           style={styles.card}
           onPress={() => handleToolPress(tool.screen)}
         >
           <Text style={styles.icon}>{tool.icon}</Text>
           <Text style={styles.title}>{tool.title}</Text>
-        </TouchableOpacity>
+        </Card>
       ))}
     </View>
     </View>
@@ -62,6 +64,7 @@ const styles = StyleSheet.create({
     width: "48%",
     height: 150,
     borderRadius: 8,
+    border : "2px solid #000",
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",

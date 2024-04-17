@@ -11,7 +11,6 @@ import {
   StatusBar,
 } from "react-native";
 import { FIREBASE_APP } from "../Services/firebaseConfig";
-import Svg, { Path } from "react-native-svg";
 import { ActivityIndicator, Divider } from "react-native-paper";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -20,6 +19,8 @@ import { getPregnancyInfo, getUserData } from "../Services/fireStore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import InfoCard from "../components/InfoCard";
 import ArticleCard from "../components/ArticleCard";
+import CustomCalendar from "../components/CustomCalendar";
+import ProgressBar from "../components/ProgressBar";
 
 const auth = getAuth(FIREBASE_APP);
 
@@ -143,20 +144,14 @@ const Home = () => {
           </View>
         ) : (
           <>
-            {/* <View style={styles.box}></View> */}
 
-            <Text
-              style={styles.header}
-            >
+            <Text style={styles.header}>
               Welcome {userName ? userName : "User"}
             </Text>
             <View>
-              <Image
-              style={styles.image}
-              source={require("../assets/Images/cute-baby.png")}
-            />
+              
             </View>
-            
+
             <View style={{ margin: 10 }}>
               <InfoCard
                 style={styles.infoCard}
